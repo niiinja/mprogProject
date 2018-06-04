@@ -24,7 +24,7 @@ Datasources: Various websites of venues. Their event pages will be in html and t
 
 External components: I will be screen scraping on event pages of various websites using Jsoup https://jsoup.org/ Jsoup is a java library for parsing, extracting and manipulating real-world HTML
 
-Similar mobile apps: Calendars with RSS feeds? Facebook 
+Similar mobile apps: At the moment people use social media like Facebook(and to some extends Twitter and Instagram) to find out about events. These platforms require the organizers to create an account and actively post their events on there. Before social media there was the RSS feed, which is still used by some to read the news. RSS also requires the organizer to take action: they need to add an RSS feed to their website. There currently aren’t any mobile apps that collect events without any extra effort from the organizers .
 
 Hardest parts: Every html page will be formatted differently, the hardest part will be to tweak the scraping and transforming in such a way that its output will be legible and for the most part comparable to the results coming from other websites.
 
