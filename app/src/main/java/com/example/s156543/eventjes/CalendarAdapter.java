@@ -1,12 +1,9 @@
 package com.example.s156543.eventjes;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
+import android.database.Cursor;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,34 +12,31 @@ import java.util.ArrayList;
  * Created by s156543 on 7-6-2018.
  */
 
-public class CalendarAdapter extends ArrayAdapter<String> {
-    ArrayList<String> events;
-    @NonNull
+public class CalendarAdapter extends ResourceCursorAdapter {
+    Scraper scraper;
+
+    public CalendarAdapter(Context context, Cursor cursor){
+        super(context, R.layout.eventlist_row, cursor);
+    }
+
     @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        scraper = new Scraper();
+        ArrayList<String> titles = new ArrayList<>();
 
+        String url = cursor.getString(cursor.getColumnIndex("url"));
+        titles = scraper.scrapeTitle(url);
 
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        convertView = LayoutInflater.from(getContext()).inflate(R.layout.eventlist_row, parent, false);
-
-        TextView titleView = (TextView) convertView.findViewById(R.id.title);
-        String event = events.get(position);
-        titleView.setText(event);
-        System.out.print(event);
-
-        if (convertView == null){
-
+        for(String t : titles){
+            TextView locationView = view.findViewById(R.id.location);
+            locationView.setText(url);
+            TextView titleView = view.findViewById(R.id.title);
+            titleView.setText(t);
+            TextView timeView = view.findViewById(R.id.time);
+            timeView.setText("00:00");
         }
-        return convertView;
-    }
-
-    public CalendarAdapter(@NonNull Context context, int resource,
-                           @NonNull ArrayList<String> categories) {
-
-        super(context, resource, categories);
-
-
-        this.events = categories;
-
 
     }
+
+
 }
