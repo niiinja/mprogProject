@@ -29,11 +29,17 @@ public class Scraper {
         this.lv = lv;
     }
 
-    public ArrayList<String> scrapeTitle(String u, final ArrayList<String> titlesArray){
+    public ArrayList<String> scrapeTitle(String u, final ArrayList<String> titlesArray, eventDatabase eventdatabase){
         final String url = u;
+        final eventDatabase db = eventdatabase;
+
+        //final eventDatabase instance = eventDatabase.getInstance(activity);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+
                 final StringBuilder builder = new StringBuilder();
                 try {
                     // SELECT url FROM websites
@@ -62,7 +68,13 @@ public class Scraper {
                         titles = h4s;
                     }
                     for(Element t : titles){
+                        String imgUrl = findImg(doc, t);
                         titlesArray.add(t.text());
+                        String org = getOrganizer(url);
+
+                        EventEntry eventEntry = new EventEntry(org, t.text(), "00:00",
+                                "0-0-0000", "$0",imgUrl, "standard" );
+                        db.insertEvent(eventEntry);
 
                     }
 
@@ -86,6 +98,29 @@ public class Scraper {
             System.out.println(t);
             }
         return titlesArray;
+    }
+
+
+    private String getOrganizer(String u){
+        String organizer = u;
+        int index = organizer.indexOf(".");
+        if (index > 0)
+            organizer = organizer.substring(0, index);
+
+        int i = organizer.indexOf("/");
+        if (i> 0)// && index < 8)
+            organizer = organizer.substring(i + 2, organizer.length());
+
+        return  organizer;
+    }
+
+    private String findImg(Document doc, Element t){
+        String imgurl;
+//        Elements images = doc.select(t + "> img" );
+//        for (Element i : images){
+//            return i.attr("src");
+//        }
+        return "https://78.media.tumblr.com/123380213bb9d9634a04cc882b0fccad/tumblr_p0xuchO7lC1twki9io1_1280.jpg";
     }
 
 }

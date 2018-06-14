@@ -41,6 +41,7 @@ public class CalendarActivity extends AppCompatActivity {
         db = eventDatabase.getInstance(getApplicationContext());
         Cursor cursor = db.selectAll();
         eventlist = findViewById(R.id.eventlist);
+        eventlist.setOnItemClickListener(new ListViewClickListener());
         eventlist.setAdapter(adapter);
 
         temp = (TextView) findViewById(R.id.temp);
@@ -53,15 +54,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-//        switches.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                toDetails();
-//            }
-//        });
-        eventlist.setOnItemClickListener(new ListViewClickListener());
-        //websites.add("https://radar.squat.net/en/events/city/Amsterdam");
-        //getWebsite();
+
     }
 
     private void toSettings() {
@@ -84,7 +77,7 @@ public class CalendarActivity extends AppCompatActivity {
         Scraper scraper = new Scraper(CalendarActivity.this, lv);
         while (c.moveToNext()) {
             String url = c.getString(c.getColumnIndex("url"));
-            scraper.scrapeTitle(url, titlesArray);
+            scraper.scrapeTitle(url, titlesArray, db);
         }
     }
 
@@ -101,11 +94,18 @@ public class CalendarActivity extends AppCompatActivity {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            String calendarName = Objects.toString(adapterView.getItemAtPosition(i));
+            String click  = (String) adapterView.getItemAtPosition(i);
+//
+//            String entryTitle = click.getString(click.getColumnIndex("title"));
+//            String entryOrg = click.getString(click.getColumnIndex("organizer"));
 
             // Clicked category is passed to the MenuActivity
             Intent intent = new Intent(CalendarActivity.this, DetailActivity.class);
-            intent.putExtra("categoryName", calendarName);
+
+            intent.putExtra("title", click);
+            intent.putExtra("organizer", click);
+            intent.putExtra("position", i);
+
             startActivity(intent);
         }
     }

@@ -20,13 +20,15 @@ public class eventDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         SQLiteDatabase db = sqLiteDatabase;
-        String query = "CREATE TABLE events (_id INTEGER PRIMARY KEY, title STRING, location STRING, date STRING, time STRING, price STRING, type STRING);";
+        String query = "CREATE TABLE events (_id INTEGER PRIMARY KEY, title STRING, location STRING," +
+                " date STRING, time STRING, price STRING, imgurl STRING, type STRING);";
         db.execSQL(query);
         query = "CREATE TABLE websites (_id INTEGER PRIMARY KEY, url STRING, type STRING, method STRING);";
         db.execSQL(query);
 
-        String samples = "INSERT INTO events (title, location, date, time, price, type) VALUES ('odorama', 'spannend', 'VANDAAG', '19:15', 'free', 'workshop');";
-        db.execSQL(samples);
+//        //String samples = "INSERT INTO events (title, location, date, time, price, type) VALUES " +
+//                "('odorama', 'spannend', 'VANDAAG', '19:15', 'free', 'workshop');";
+//        db.execSQL(samples);
 
     }
 
@@ -60,10 +62,32 @@ public class eventDatabase extends SQLiteOpenHelper {
         entrydb.insert("websites", null, contentValues);
     }
 
+    public void insertEvent(EventEntry eventEntry){
+        SQLiteDatabase entrydb =  this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("title", eventEntry.title);
+        contentValues.put("location", eventEntry.organizer);
+        contentValues.put("date", eventEntry.date);
+        contentValues.put("time", eventEntry.time);
+        contentValues.put("price", eventEntry.price);
+        contentValues.put("imgurl", eventEntry.imgUrl);
+        contentValues.put("type", eventEntry.type);
+
+        entrydb.insert("events", null, contentValues);
+
+    }
+
     // grabs all journal entries
     public Cursor selectAll(){
         SQLiteDatabase selectAlldb = this.getWritableDatabase();
         Cursor cursor = selectAlldb.rawQuery("SELECT * FROM websites", null);
+        return cursor;
+    }
+
+    public Cursor selectAllEvents(){
+        SQLiteDatabase selectAlldb = this.getWritableDatabase();
+        Cursor cursor = selectAlldb.rawQuery("SELECT * FROM events", null);
         return cursor;
     }
 }
