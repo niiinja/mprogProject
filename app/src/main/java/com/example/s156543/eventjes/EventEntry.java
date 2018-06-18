@@ -13,8 +13,11 @@ public class EventEntry {
     String price;
     String type;
     String imgUrl;
+    String eventUrl;
+    String description
+
     public EventEntry(String organizer, String title, String time, String date, String price,
-                      String imgUrl, String type) {
+                      String imgUrl, String type, String eventUrl, String description) {
 
         this.organizer = organizer;
         this.title = title;
@@ -23,6 +26,8 @@ public class EventEntry {
         this.price = price;
         this.type = type;
         this.imgUrl = imgUrl;
+        this.eventUrl = eventUrl;
+        this.description = description;
     }
 
     public String getOrganizer() {

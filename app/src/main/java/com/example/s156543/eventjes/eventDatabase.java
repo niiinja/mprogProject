@@ -21,7 +21,8 @@ public class eventDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         SQLiteDatabase db = sqLiteDatabase;
         String query = "CREATE TABLE events (_id INTEGER PRIMARY KEY, title STRING, location STRING," +
-                " date STRING, time STRING, price STRING, imgurl STRING, type STRING);";
+                " date STRING, time STRING, price STRING, imgurl STRING, type STRING, eventurl STRING," +
+                "description STRING);";
         db.execSQL(query);
         query = "CREATE TABLE websites (_id INTEGER PRIMARY KEY, url STRING, type STRING, method STRING);";
         db.execSQL(query);
@@ -73,6 +74,8 @@ public class eventDatabase extends SQLiteOpenHelper {
         contentValues.put("price", eventEntry.price);
         contentValues.put("imgurl", eventEntry.imgUrl);
         contentValues.put("type", eventEntry.type);
+        contentValues.put("eventurl", eventEntry.eventUrl);
+        contentValues.put("description", eventEntry.description);
 
         entrydb.insert("events", null, contentValues);
 
@@ -89,5 +92,11 @@ public class eventDatabase extends SQLiteOpenHelper {
         SQLiteDatabase selectAlldb = this.getWritableDatabase();
         Cursor cursor = selectAlldb.rawQuery("SELECT * FROM events", null);
         return cursor;
+    }
+
+    public void updateDescription(String d, int id){
+        SQLiteDatabase entrydb =  this.getWritableDatabase();
+
+        //entrydb.update("events", "description",  );
     }
 }
