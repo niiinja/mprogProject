@@ -20,19 +20,21 @@ import java.util.List;
  */
 
 public class Scraper {
-    Activity activity;
-    ListView lv;
     Adapter adapter;
 
-    public Scraper(Activity activity, ListView lv) {
-        this.activity = activity;
-        this.adapter = adapter;
-        this.lv = lv;
+    public Scraper() {
+
     }
 
-    public ArrayList<String> scrapeTitle(String u, final ArrayList<String> titlesArray, eventDatabase eventdatabase) {
+    public ArrayList<String> scrapeTitle(Activity act, ListView listview, String u,
+                                         final ArrayList<String> titlesArray, eventDatabase eventdatabase) {
+
+        final Activity activity = act;
         final String url = u;
         final eventDatabase db = eventdatabase;
+
+        this.adapter = adapter;
+        final ListView lv = listview;
 
         //final eventDatabase instance = eventDatabase.getInstance(activity);
 
@@ -72,11 +74,9 @@ public class Scraper {
                         String imgUrl = findImg(doc, t);
                         titlesArray.add(t.text());
                         String org = getOrganizer(url);
-                        Element u = t.selectFirst("a[href]");
-
-
+                        String u = t.attr("abs:href");
                         EventEntry eventEntry = new EventEntry(org, t.text(), "00:00",
-                                "0-0-0000", "$0", imgUrl, "standard", u.text());
+                                "0-0-0000", "$0", imgUrl, "standard", u, "no description");
                         db.insertEvent(eventEntry);
 
 
@@ -130,12 +130,13 @@ public class Scraper {
 //        }
         return "https://78.media.tumblr.com/123380213bb9d9634a04cc882b0fccad/tumblr_p0xuchO7lC1twki9io1_1280.jpg";
     }
-}
 
-    public String scrapeP(String title, eventDatabase eventdatabase, EventEntry evententry){
-        final String url = title;
-        final EventEntry event = evententry;
+
+    public void scrapeP(String eventUrl, final eventDatabase eventdatabase, long ID){
+        final String url = eventUrl;
+        //final EventEntry event = evententry;
         final eventDatabase db = eventdatabase;
+        final long id = ID;
 
         //final eventDatabase instance = eventDatabase.getInstance(activity);
 
@@ -151,37 +152,14 @@ public class Scraper {
                     Elements paragraphs = doc.select("p");
                     for( Element p : paragraphs) {
                         String d = p.toString();
-                        event.description = d;
-                        db.insertEvent(eventEntry);
+                        //event.description = d;
+                        eventdatabase.updateDescription(d,id);
                         break;
                     }
-
-
-
-
-                    }
-
-
-                } catch (IOException e) {
-                    titlesArray.add("error");
-
-
                 }
-                activity.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        adapter = new CalendarAdapter(activity, R.layout.eventlist_row, titlesArray, url);
-                        lv.setAdapter((ListAdapter) adapter);                    }
-                });
+                catch (IOException e) {
+                }
             }
         }).start();
-        for(String t : titlesArray){
-            System.out.println(t);
-        }
-        return titlesArray;
     }
-
-
 }

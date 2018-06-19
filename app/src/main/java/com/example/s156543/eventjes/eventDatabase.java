@@ -94,9 +94,10 @@ public class eventDatabase extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void updateDescription(String d, int id){
+    public void updateDescription(String d, long id){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
-
-        //entrydb.update("events", "description",  );
+        ContentValues cv = new ContentValues();
+        cv.put("description", "d");
+        entrydb.update("events", cv,"_id =" + id, null);
     }
 }

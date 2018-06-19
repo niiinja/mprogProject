@@ -74,10 +74,10 @@ public class CalendarActivity extends AppCompatActivity {
         final ArrayList<String> titlesArray = new ArrayList<>();
 
 
-        Scraper scraper = new Scraper(CalendarActivity.this, lv);
+        Scraper scraper = new Scraper();
         while (c.moveToNext()) {
             String url = c.getString(c.getColumnIndex("url"));
-            scraper.scrapeTitle(url, titlesArray, db);
+            scraper.scrapeTitle(CalendarActivity.this, lv, url, titlesArray, db);
         }
     }
 

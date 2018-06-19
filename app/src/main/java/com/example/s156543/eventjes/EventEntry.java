@@ -14,7 +14,7 @@ public class EventEntry {
     String type;
     String imgUrl;
     String eventUrl;
-    String description
+    String description;
 
     public EventEntry(String organizer, String title, String time, String date, String price,
                       String imgUrl, String type, String eventUrl, String description) {
