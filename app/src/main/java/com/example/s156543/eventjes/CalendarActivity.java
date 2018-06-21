@@ -39,7 +39,7 @@ public class CalendarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
 
         db = eventDatabase.getInstance(getApplicationContext());
-        Cursor cursor = db.selectAll();
+        Cursor cursor = db.selectAllWebsites();
         eventlist = findViewById(R.id.eventlist);
         eventlist.setOnItemClickListener(new ListViewClickListener());
         eventlist.setAdapter(adapter);
@@ -67,14 +67,11 @@ public class CalendarActivity extends AppCompatActivity {
         ListView lv = findViewById(R.id.eventlist);
 
         eventDatabase db = eventDatabase.getInstance(getApplicationContext());
-        WebsiteEntry we = new WebsiteEntry("http://subbacultcha.nl/events", "type", "standard");
-        db.insertWebsite(we);
 
-        Cursor c = db.selectAll();
+        Cursor c = db.selectAllWebsites();
         final ArrayList<String> titlesArray = new ArrayList<>();
-
-
         Scraper scraper = new Scraper();
+
         while (c.moveToNext()) {
             String url = c.getString(c.getColumnIndex("url"));
             scraper.scrapeTitle(CalendarActivity.this, lv, url, titlesArray, db);

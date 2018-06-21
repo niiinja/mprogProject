@@ -82,7 +82,7 @@ public class eventDatabase extends SQLiteOpenHelper {
     }
 
     // grabs all journal entries
-    public Cursor selectAll(){
+    public Cursor selectAllWebsites(){
         SQLiteDatabase selectAlldb = this.getWritableDatabase();
         Cursor cursor = selectAlldb.rawQuery("SELECT * FROM websites", null);
         return cursor;
