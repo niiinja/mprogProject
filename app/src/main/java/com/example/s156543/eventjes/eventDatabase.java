@@ -22,7 +22,7 @@ public class eventDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = sqLiteDatabase;
         String query = "CREATE TABLE events (_id INTEGER PRIMARY KEY, title STRING, location STRING," +
                 " date STRING, time STRING, price STRING, imgurl STRING, type STRING, eventurl STRING," +
-                "description STRING);";
+                "description STRING, saved BIT);";
         db.execSQL(query);
         query = "CREATE TABLE websites (_id INTEGER PRIMARY KEY, url STRING, type STRING, method STRING);";
         db.execSQL(query);
@@ -77,6 +77,11 @@ public class eventDatabase extends SQLiteOpenHelper {
         contentValues.put("eventurl", eventEntry.eventUrl);
         contentValues.put("description", eventEntry.description);
 
+        if(eventEntry.saved){
+            contentValues.put("saved", 1);
+        }
+        else{ contentValues.put("saved", 0);}
+
         entrydb.insert("events", null, contentValues);
 
     }
@@ -85,6 +90,12 @@ public class eventDatabase extends SQLiteOpenHelper {
     public Cursor selectAllWebsites(){
         SQLiteDatabase selectAlldb = this.getWritableDatabase();
         Cursor cursor = selectAlldb.rawQuery("SELECT * FROM websites", null);
+        return cursor;
+    }
+
+    public Cursor selectSavedEvents(){
+        SQLiteDatabase selectAlldb = this.getWritableDatabase();
+        Cursor cursor = selectAlldb.rawQuery("SELECT * FROM events WHERE saved = '1'", null);
         return cursor;
     }
 
@@ -97,7 +108,19 @@ public class eventDatabase extends SQLiteOpenHelper {
     public void updateDescription(String d, long id){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("description", "d");
+        cv.put("description", d);
         entrydb.update("events", cv,"_id =" + id, null);
+    }
+
+    public void saveEntry(long id){
+        SQLiteDatabase entrydb =  this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("saved", "1");
+        entrydb.update("events", cv, "_id =" + id, null);
+    }
+
+    public void deleteWebsite(long id){
+        SQLiteDatabase entrydb =  this.getWritableDatabase();
+        entrydb.delete("websites", "_id =" + id, null);
     }
 }

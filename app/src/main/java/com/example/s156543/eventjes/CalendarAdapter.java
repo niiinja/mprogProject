@@ -43,8 +43,6 @@ public class CalendarAdapter extends ArrayAdapter<String>{
 
         url = url.replace("http://", "");
 
-
-
         TextView locView = convertView.findViewById(R.id.location);
         locView.setText(url);
 

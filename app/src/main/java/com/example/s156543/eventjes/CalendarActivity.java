@@ -2,21 +2,20 @@ package com.example.s156543.eventjes;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import org.jsoup.nodes.Document;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class CalendarActivity extends AppCompatActivity {
     private Button settings;
@@ -39,7 +38,18 @@ public class CalendarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
 
         db = eventDatabase.getInstance(getApplicationContext());
-        Cursor cursor = db.selectAllWebsites();
+
+        ToggleButton toggle = findViewById(R.id.switchCalendar);
+
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    updateData(true);
+                } else {updateData(false);               }
+            }
+        });
+
         eventlist = findViewById(R.id.eventlist);
         eventlist.setOnItemClickListener(new ListViewClickListener());
         eventlist.setAdapter(adapter);
@@ -63,25 +73,43 @@ public class CalendarActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void updateData() {
+    private void updateData(Boolean save) {
         ListView lv = findViewById(R.id.eventlist);
 
         eventDatabase db = eventDatabase.getInstance(getApplicationContext());
+        Cursor c;
+        if(save) {
+            c = db.selectSavedEvents();
+            ArrayList<String> titlesArray = null;
 
-        Cursor c = db.selectAllWebsites();
-        final ArrayList<String> titlesArray = new ArrayList<>();
-        Scraper scraper = new Scraper();
+            while(c.moveToNext()){
+                String title = c.getString(c.getColumnIndex("title"));
+                titlesArray.add(title);
+            }
 
-        while (c.moveToNext()) {
-            String url = c.getString(c.getColumnIndex("url"));
-            scraper.scrapeTitle(CalendarActivity.this, lv, url, titlesArray, db);
+            String url = "bla";
+            adapter = new CalendarAdapter(this, R.layout.eventlist_row, titlesArray, url);
+            lv.setAdapter( adapter);
+        }
+
+        else{
+            c = db.selectAllWebsites();
+
+            final ArrayList<String> titlesArray = new ArrayList<>();
+            Scraper scraper = new Scraper();
+
+            while (c.moveToNext()) {
+                String url = c.getString(c.getColumnIndex("url"));
+                scraper.scrapeTitle(CalendarActivity.this, lv, url, titlesArray, db);
+            }
         }
     }
+
 
     protected void onResume() {
 
         super.onResume();
-        updateData();
+        updateData(false);
         System.out.println("resume update");
 
     }
@@ -106,5 +134,7 @@ public class CalendarActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+
+
 
 }

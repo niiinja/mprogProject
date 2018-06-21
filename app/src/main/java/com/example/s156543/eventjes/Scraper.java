@@ -74,14 +74,16 @@ public class Scraper {
                         String imgUrl = findImg(doc, t);
                         titlesArray.add(t.text());
                         String org = getOrganizer(url);
-                        String u = t.attr("abs:href");
+                        //String u = t.attr("abs:href");
+                        //u = t.childNode(0).attributes().toString();
+                        String u = t.childNode(0).attr("href").toString();
+
                         EventEntry eventEntry = new EventEntry(org, t.text(), "00:00",
-                                "0-0-0000", "$0", imgUrl, "standard", u, "no description");
+                                "0-0-0000", "$0", imgUrl, "standard", u,
+                                "no description", false);
                         db.insertEvent(eventEntry);
 
-
                         Elements url = doc.select("h1");
-
                     }
 
 
@@ -124,11 +126,10 @@ public class Scraper {
     private String findImg(Document doc, Element t) {
         String imgurl;
         Document eventDoc;
-//        Elements images = doc.select(t + "> img" );
-//        for (Element i : images){
-//            return i.attr("src");
-//        }
-        return "https://78.media.tumblr.com/123380213bb9d9634a04cc882b0fccad/tumblr_p0xuchO7lC1twki9io1_1280.jpg";
+        Element grandparent = t.parent().parent();
+        Element image = grandparent.select("img").first();
+        String imageHref = image.attr("src");
+        return imageHref;
     }
 
 
@@ -138,22 +139,21 @@ public class Scraper {
         final eventDatabase db = eventdatabase;
         final long id = ID;
 
+
         //final eventDatabase instance = eventDatabase.getInstance(activity);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-                final StringBuilder builder = new StringBuilder();
                 try {
                     // SELECT url FROM websites
                     Document doc = Jsoup.connect(url).get();
 
                     Elements paragraphs = doc.select("p");
                     for( Element p : paragraphs) {
-                        String d = p.toString();
+                        String d = p.text();
                         //event.description = d;
-                        eventdatabase.updateDescription(d,id);
+                        eventdatabase.updateDescription(d, id);
                         break;
                     }
                 }
@@ -161,5 +161,7 @@ public class Scraper {
                 }
             }
         }).start();
+        //return d[0];
+
     }
 }
