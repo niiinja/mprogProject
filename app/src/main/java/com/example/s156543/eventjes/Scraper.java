@@ -128,7 +128,10 @@ public class Scraper {
         Document eventDoc;
         Element grandparent = t.parent().parent();
         Element image = grandparent.select("img").first();
-        String imageHref = image.attr("src");
+        String imageHref;
+        if(image != null){
+             imageHref = image.attr("src");}
+        else imageHref = "https://78.media.tumblr.com/avatar_5c436267e955_128.pnj";
         return imageHref;
     }
 
