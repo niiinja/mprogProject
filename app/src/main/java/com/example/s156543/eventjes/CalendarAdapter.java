@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
@@ -17,20 +18,73 @@ import java.util.ArrayList;
  * Created by s156543 on 7-6-2018.
  */
 
-public class CalendarAdapter extends ArrayAdapter<String>{
-    private final ArrayList<String> titles;
+public class CalendarAdapter extends CursorAdapter{
+
     String url;
+    String title;
+    String time;
+    Cursor cursor;
 
-    ArrayList<String> events;
-    @NonNull
+    public CalendarAdapter(Context context, Cursor c, boolean autoRequery) {
+        super(context, c, autoRequery);
+    }
+
+//    @NonNull
+//    @Override
+//
+//
+//    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+//        convertView = LayoutInflater.from(getContext()).inflate(R.layout.eventlist_row, parent, false);
+//
+//        TextView titleView = (TextView) convertView.findViewById(R.id.title);
+//        TextView locView = (TextView) convertView.findViewById(R.id.location);
+//        TextView timeView = convertView.findViewById(R.id.time);
+//
+//        if(cursor.move(position)){
+//            title = cursor.getString(cursor.getColumnIndex("title"));
+//            url = cursor.getString(cursor.getColumnIndex("eventurl"));
+//            time = cursor.getString(cursor.getColumnIndex("time"));
+//
+//        }
+//        titleView.setText(title);
+//
+//        int index = url.indexOf(".");
+//        if (index > 0)
+//            url = url.substring(0, index);
+//
+//        index = url.indexOf("/");
+//        if (index > 0 && index < 8)
+//            url = url.substring(index + 2, url.length());
+//
+//        url = url.replace("http://", "");
+//        locView.setText(url);
+//
+//        timeView.setText(time);
+//
+//        if (convertView == null){
+//
+//        }
+//        return convertView;
+//    }
+
     @Override
+    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+        return LayoutInflater.from(context).inflate(R.layout.eventlist_row, viewGroup, false);
+
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+
+        TextView titleView = (TextView) view.findViewById(R.id.title);
+        TextView locView = (TextView) view.findViewById(R.id.location);
+        TextView timeView = view.findViewById(R.id.time);
 
 
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        convertView = LayoutInflater.from(getContext()).inflate(R.layout.eventlist_row, parent, false);
+        title = cursor.getString(cursor.getColumnIndex("title"));
+        url = cursor.getString(cursor.getColumnIndex("eventurl"));
+        time = cursor.getString(cursor.getColumnIndex("time"));
 
-        TextView titleView = (TextView) convertView.findViewById(R.id.title);
-        String title = titles.get(position);
         titleView.setText(title);
 
         int index = url.indexOf(".");
@@ -42,53 +96,9 @@ public class CalendarAdapter extends ArrayAdapter<String>{
             url = url.substring(index + 2, url.length());
 
         url = url.replace("http://", "");
-
-        TextView locView = convertView.findViewById(R.id.location);
         locView.setText(url);
 
-        TextView timeView = convertView.findViewById(R.id.time);
-        timeView.setText("00:00");
-
-        if (convertView == null){
-
-        }
-        return convertView;
-    }
-
-    public CalendarAdapter(@NonNull Context context, int resource,
-                           @NonNull ArrayList<String> titles, String url) {
-
-        super(context, resource, titles);
-
-
-        this.titles = titles;
-        this.url = url;
+        timeView.setText(time);
 
     }
-    }//    Scraper scraper;
-//
-//    public CalendarAdapter(Context context, Cursor cursor){
-//        super(context, R.layout.eventlist_row, cursor);
-//    }
-//
-//    @Override
-//    public void bindView(View view, Context context, Cursor cursor) {
-////        scraper = new Scraper();
-////        ArrayList<String> titles;
-////
-////        String url = cursor.getString(cursor.getColumnIndex("url"));
-////        titles = scraper.scrapeTitle(url);
-//
-//        for(String t : titles){
-//            TextView locationView = view.findViewById(R.id.location);
-//            locationView.setText(url);
-//            TextView titleView = view.findViewById(R.id.title);
-//            titleView.setText(t);
-//            TextView timeView = view.findViewById(R.id.time);
-//            timeView.setText("00:00");
-//        }
-//
-//    }
-//
-//
-//}
+}

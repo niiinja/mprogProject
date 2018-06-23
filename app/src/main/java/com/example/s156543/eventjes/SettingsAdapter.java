@@ -21,9 +21,6 @@ import java.util.ArrayList;
 
 public class SettingsAdapter extends ArrayAdapter<String>{
     private final ArrayList<String> urls;
-    public Cursor cursor = null;
-    Context context;
-    int resource;
 
     @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){

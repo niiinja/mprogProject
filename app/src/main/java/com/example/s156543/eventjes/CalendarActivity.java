@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +25,8 @@ public class CalendarActivity extends AppCompatActivity {
     private ListView eventlist;
 
     private TextView temp;
+    boolean save = false;
+    ToggleButton toggle;
 
     public static ArrayList<String> titles = new ArrayList<String>();
 
@@ -32,21 +35,21 @@ public class CalendarActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Document doc = null;
         super.onCreate(savedInstanceState);
         switches = findViewById(R.id.switchCalendar);
         setContentView(R.layout.activity_calendar);
-
         db = eventDatabase.getInstance(getApplicationContext());
-
-        ToggleButton toggle = findViewById(R.id.switchCalendar);
+        toggle = findViewById(R.id.switchCalendar);
 
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    updateData(true);
-                } else {updateData(false);               }
+                    save = true;
+                    updateData(save);
+                } else {
+                    save = false;
+                    updateData(save);               }
             }
         });
 
@@ -63,8 +66,6 @@ public class CalendarActivity extends AppCompatActivity {
                 toSettings();
             }
         });
-
-
     }
 
     private void toSettings() {
@@ -80,7 +81,7 @@ public class CalendarActivity extends AppCompatActivity {
         Cursor c;
         if(save) {
             c = db.selectSavedEvents();
-            ArrayList<String> titlesArray = null;
+            ArrayList<String> titlesArray = new ArrayList<>();
 
             while(c.moveToNext()){
                 String title = c.getString(c.getColumnIndex("title"));
@@ -88,8 +89,9 @@ public class CalendarActivity extends AppCompatActivity {
             }
 
             String url = "bla";
-            adapter = new CalendarAdapter(this, R.layout.eventlist_row, titlesArray, url);
-            lv.setAdapter( adapter);
+            adapter = new CalendarAdapter(this, c, true);
+            lv.setAdapter(adapter);
+            return;
         }
 
         else{
@@ -102,14 +104,18 @@ public class CalendarActivity extends AppCompatActivity {
                 String url = c.getString(c.getColumnIndex("url"));
                 scraper.scrapeTitle(CalendarActivity.this, lv, url, titlesArray, db);
             }
+
+            Cursor ec = db.selectAllEvents();
+            adapter = new CalendarAdapter(this, ec, true);
+            lv.setAdapter(adapter);
         }
     }
-
 
     protected void onResume() {
 
         super.onResume();
-        updateData(false);
+        toggle.setChecked(save);
+        updateData(save);
         System.out.println("resume update");
 
     }
@@ -119,22 +125,19 @@ public class CalendarActivity extends AppCompatActivity {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            String click  = (String) adapterView.getItemAtPosition(i);
-//
+            Cursor click  = (Cursor) adapterView.getItemAtPosition(i);
+
 //            String entryTitle = click.getString(click.getColumnIndex("title"));
 //            String entryOrg = click.getString(click.getColumnIndex("organizer"));
 
             // Clicked category is passed to the MenuActivity
             Intent intent = new Intent(CalendarActivity.this, DetailActivity.class);
 
-            intent.putExtra("title", click);
-            intent.putExtra("organizer", click);
+            intent.putExtra("title", click.getColumnIndex("title"));
+            intent.putExtra("organizer", click.getColumnIndex("location"));
             intent.putExtra("position", i);
 
             startActivity(intent);
         }
     }
-
-
-
 }

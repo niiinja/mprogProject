@@ -26,11 +26,6 @@ public class eventDatabase extends SQLiteOpenHelper {
         db.execSQL(query);
         query = "CREATE TABLE websites (_id INTEGER PRIMARY KEY, url STRING, type STRING, method STRING);";
         db.execSQL(query);
-
-//        //String samples = "INSERT INTO events (title, location, date, time, price, type) VALUES " +
-//                "('odorama', 'spannend', 'VANDAAG', '19:15', 'free', 'workshop');";
-//        db.execSQL(samples);
-
     }
 
     @Override
@@ -50,9 +45,8 @@ public class eventDatabase extends SQLiteOpenHelper {
         return instance;
     }
 
-    // insert new journal entry in the entries database
+    // Insert new journal entry in the entries database
     public void insertWebsite(WebsiteEntry websiteEntry){
-
         SQLiteDatabase entrydb =  this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -83,7 +77,6 @@ public class eventDatabase extends SQLiteOpenHelper {
         else{ contentValues.put("saved", 0);}
 
         entrydb.insert("events", null, contentValues);
-
     }
 
     // grabs all journal entries
@@ -122,5 +115,12 @@ public class eventDatabase extends SQLiteOpenHelper {
     public void deleteWebsite(long id){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
         entrydb.delete("websites", "_id =" + id, null);
+    }
+
+    public void saveEvent(long id){
+        SQLiteDatabase entrydb =  this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("saved", 1);
+        entrydb.update("events", cv, "_id =" + id, null);
     }
 }
