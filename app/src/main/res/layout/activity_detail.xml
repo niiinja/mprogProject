@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:onClick="clickFAB"
+    android:orientation="vertical"
+    app:layout_anchorGravity="bottom|end"
+    tools:context="com.example.s156543.eventjes.DetailActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ToggleButton
+            android:id="@+id/saviour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="save"
+            android:textOff="save"
+            android:textOn="saved" />
+
+        <TextView
+            android:id="@+id/organizer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="today 20:30"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:padding="20dp"
+            app:srcCompat="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="The dreams that stay in our awoken mind, are often auditory and visual impressions. Dreams can feel so real, but can olfactory impressions also play a part in them, and is it possible to recollect these too? Scented dreams are a rare phenomenon that have been reported in few scientific studies, most of them done by olfactory experts and perfumers. During this Odorama edition, scent experts and dreamers alike will show you how to broaden your recollection of dreams, and how this can be significant in our lives.  Odorama is a collaboration between Mediamatic and Caro Verbeek. This edition is curated by Sanne Groeneveld and co-curated by Caro Verbeek."
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/floatingActionButton"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="auto"-->
+        <!--app:backgroundTint="@android:color/holo_green_light"-->
+        <!--app:layout_anchorGravity="bottom|right"-->
+        <!--app:rippleColor="?attr/actionModeSplitBackground"-->
+        <!--app:srcCompat="@android:drawable/ic_menu_save" />-->
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.s156543.eventjes.SettingsActivity">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/inputlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        android:layout_marginTop="50dp"
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:hint="enter website eventpage"
+            android:padding="20dp"
+            android:textColor="@android:color/black" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginTop="70dp"
+
+        android:text="type" />
+
+    <CheckBox
+        android:id="@+id/party"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="85dp"
+
+        android:text="party" />
+
+    <CheckBox
+        android:id="@+id/intelligent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:text="workshop" />
+
+    <CheckBox
+        android:id="@+id/other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="115dp"
+
+        android:text="art"
+        tools:text="art" />
+
+    <Button
+        android:id="@+id/addbtn"
+        style="@android:style/Widget.DeviceDefault.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/scrollView2"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="1"
+        android:text="add"
+        android:layout_marginTop="130dp"
+        android:textSize="12sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:id="@+id/scrollView2">
+
+        <ListView
+            android:id="@+id/scrollList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/remove"
+        style="@android:style/Widget.DeviceDefault.Light.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="400dp"
+        android:text="remove"
+        android:textSize="12sp" />
+
+
+
+    android:layout_weight="1"
+        android:text="Return" />
+
+
+</RelativeLayout>
