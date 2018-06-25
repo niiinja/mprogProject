@@ -27,9 +27,6 @@ public class CalendarActivity extends AppCompatActivity {
     private TextView temp;
     boolean save = false;
     ToggleButton toggle;
-
-    public static ArrayList<String> titles = new ArrayList<String>();
-
     eventDatabase db;
     CalendarAdapter adapter;
 
@@ -95,15 +92,15 @@ public class CalendarActivity extends AppCompatActivity {
         }
 
         else{
-            c = db.selectAllWebsites();
+//            c = db.selectAllWebsites();
+//
+//            final ArrayList<String> titlesArray = new ArrayList<>();
+//            Scraper scraper = new Scraper();
 
-            final ArrayList<String> titlesArray = new ArrayList<>();
-            Scraper scraper = new Scraper();
-
-            while (c.moveToNext()) {
-                String url = c.getString(c.getColumnIndex("url"));
-                scraper.scrapeTitle(CalendarActivity.this, lv, url, titlesArray, db);
-            }
+//            while (c.moveToNext()) {
+//                String url = c.getString(c.getColumnIndex("url"));
+//                scraper.scrapeTitle(CalendarActivity.this, lv, url, titlesArray, db);
+//            }
 
             Cursor ec = db.selectAllEvents();
             adapter = new CalendarAdapter(this, ec, true);

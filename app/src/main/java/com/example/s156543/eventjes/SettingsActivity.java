@@ -22,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
     Button removeBTN;
     ArrayList<Integer> selected = new ArrayList<>();
     eventDatabase db;
+    Scraper scraper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +64,16 @@ public class SettingsActivity extends AppCompatActivity {
                 selected.add(position);
             }
         });
+        scraper = new Scraper();
     }
 
     private void addButton(){
         TextView urlview = findViewById(R.id.input);
-        final String url = Objects.toString(urlview.getText());
-
+        String url = Objects.toString(urlview.getText());
+        if (url.substring(0,3) != "http"){
+            url = "http://" + url;
+        }
+        scraper.scrapeTitle(url, db, this);
         CheckBox party = findViewById(R.id.party);
         CheckBox intelligent = findViewById(R.id.intelligent);
         String type;
