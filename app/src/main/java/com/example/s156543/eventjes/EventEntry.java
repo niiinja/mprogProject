@@ -10,7 +10,7 @@ public class EventEntry {
     String title;
     String time;
     String date;
-    String price;
+    java.sql.Date dateTime;
     String type;
     String imgUrl;
     String eventUrl;
@@ -18,14 +18,14 @@ public class EventEntry {
 
     boolean saved;
 
-    public EventEntry(String organizer, String title, String time, String date, String price,
+    public EventEntry(String organizer, String title, String time, String date, java.sql.Date dateTime,
                       String imgUrl, String type, String eventUrl, String description, boolean saved) {
 
         this.organizer = organizer;
         this.title = title;
         this.time = time;
         this.date = date;
-        this.price = price;
+        this.dateTime = dateTime;
         this.type = type;
         this.imgUrl = imgUrl;
         this.eventUrl = eventUrl;
@@ -65,12 +65,12 @@ public class EventEntry {
         this.date = date;
     }
 
-    public String getPrice() {
-        return price;
+    public java.sql.Date getPrice() {
+        return dateTime;
     }
 
     public void setPrice(String price) {
-        this.price = price;
+        this.dateTime = dateTime;
     }
 
     public String getType() {

@@ -92,17 +92,9 @@ public class CalendarActivity extends AppCompatActivity {
         }
 
         else{
-//            c = db.selectAllWebsites();
-//
-//            final ArrayList<String> titlesArray = new ArrayList<>();
-//            Scraper scraper = new Scraper();
-
-//            while (c.moveToNext()) {
-//                String url = c.getString(c.getColumnIndex("url"));
-//                scraper.scrapeTitle(CalendarActivity.this, lv, url, titlesArray, db);
-//            }
 
             Cursor ec = db.selectAllEvents();
+
             adapter = new CalendarAdapter(this, ec, true);
             lv.setAdapter(adapter);
         }

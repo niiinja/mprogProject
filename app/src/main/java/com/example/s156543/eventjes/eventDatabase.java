@@ -21,7 +21,7 @@ public class eventDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         SQLiteDatabase db = sqLiteDatabase;
         String query = "CREATE TABLE events (_id INTEGER PRIMARY KEY, title STRING, location STRING," +
-                " date STRING, time STRING, price STRING, imgurl STRING, type STRING, eventurl STRING," +
+                " date STRING, time STRING, datetime DATETIME, imgurl STRING, type STRING, eventurl STRING," +
                 "description STRING, saved BIT);";
         db.execSQL(query);
         query = "CREATE TABLE websites (_id INTEGER PRIMARY KEY, url STRING, type STRING, method STRING);";
@@ -60,12 +60,15 @@ public class eventDatabase extends SQLiteOpenHelper {
     public void insertEvent(EventEntry eventEntry){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        String dateString;
+        if(eventEntry.dateTime != null) dateString = eventEntry.dateTime.toString();
+        else dateString = "1970-01-01 00:00:00";
 
         contentValues.put("title", eventEntry.title);
         contentValues.put("location", eventEntry.organizer);
         contentValues.put("date", eventEntry.date);
         contentValues.put("time", eventEntry.time);
-        contentValues.put("price", eventEntry.price);
+        contentValues.put("datetime", dateString);
         contentValues.put("imgurl", eventEntry.imgUrl);
         contentValues.put("type", eventEntry.type);
         contentValues.put("eventurl", eventEntry.eventUrl);
@@ -94,7 +97,7 @@ public class eventDatabase extends SQLiteOpenHelper {
 
     public Cursor selectAllEvents(){
         SQLiteDatabase selectAlldb = this.getWritableDatabase();
-        Cursor cursor = selectAlldb.rawQuery("SELECT * FROM events", null);
+        Cursor cursor = selectAlldb.rawQuery("SELECT * FROM events ORDER BY datetime ASC", null);
         return cursor;
     }
 
@@ -123,4 +126,5 @@ public class eventDatabase extends SQLiteOpenHelper {
         cv.put("saved", 1);
         entrydb.update("events", cv, "_id =" + id, null);
     }
+
 }
