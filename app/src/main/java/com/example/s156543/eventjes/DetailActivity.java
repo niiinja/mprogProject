@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 public class DetailActivity extends AppCompatActivity {
     String calendarName;
     int position;
+    boolean save;
     eventDatabase db;
     Cursor c;
     String description = null;
@@ -29,20 +30,20 @@ public class DetailActivity extends AppCompatActivity {
         String imgUrl = "https://78.media.tumblr.com/b9846a203d1ae13900848565e068c271/tumblr_p94sl3dytZ1rvzucio1_500.jpg";
         String time = "00:00";
         String date = "";
+        int s = 0;
         eventID = 0;
         Scraper scraper = new Scraper();
         String eventUrl = null;
         setContentView(R.layout.activity_detail);
         Intent intent = getIntent();
 
-
-//        title = (String) intent.getSerializableExtra("title");
-//        organizer = (String) intent.getSerializableExtra("organizer");
         position = (int) intent.getSerializableExtra("position") + 1;
+        save = (boolean) intent.getSerializableExtra("save");
         db = eventDatabase.getInstance(getApplicationContext());
-        c = db.selectAllEvents();
 
-
+        if(save)
+            c = db.selectSavedEvents();
+        else c = db.selectAllEvents();
 
         if (c.move(position)){
             title = c.getString(c.getColumnIndex("title"));
@@ -52,6 +53,7 @@ public class DetailActivity extends AppCompatActivity {
             eventUrl = c.getString(c.getColumnIndex("eventurl"));
             time = c.getString(c.getColumnIndex("time"));
             date = c.getString(c.getColumnIndex("date"));
+            s = c.getInt(c.getColumnIndex("saved"));
         }
 
         scraper.scrapeP(eventUrl, db, eventID, this);
@@ -71,20 +73,23 @@ public class DetailActivity extends AppCompatActivity {
         Picasso.get().load(imgUrl).into(imageView); //https://square.github.io/picasso/
 
         ToggleButton saviour = findViewById(R.id.saviour);
+        if(s == 1)
+            saviour.setChecked(true);
+
         saviour.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    save();
+                    save(1);
                 } else {
-                    return;
+                    save(0);
                 }
             }
         });
 
     }
 
-    private void save(){
-        db.saveEvent(eventID);
+    private void save(int bool){
+        db.saveEvent(eventID, bool);
     }
 
     public void updateDescription(){

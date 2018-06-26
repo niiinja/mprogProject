@@ -62,7 +62,7 @@ public class eventDatabase extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         String dateString;
         if(eventEntry.dateTime != null) dateString = eventEntry.dateTime.toString();
-        else dateString = "1970-01-01 00:00:00";
+        else dateString = "1970-12-31 00:00:00";
 
         contentValues.put("title", eventEntry.title);
         contentValues.put("location", eventEntry.organizer);
@@ -117,13 +117,29 @@ public class eventDatabase extends SQLiteOpenHelper {
 
     public void deleteWebsite(long id){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
+        Cursor c = selectAllWebsites();
+        String site = "";
+        if( c.moveToNext()){
+            if(c.getLong(c.getColumnIndex("_id")) == id){
+                site = c.getString(c.getColumnIndex("url"));
+            }
+        }
+        String organizer = site;
+        int index = organizer.indexOf(".");
+        if (index > 0)
+            organizer = organizer.substring(0, index);
+        int i = organizer.indexOf("/");
+        if (i > 0)
+            organizer = organizer.substring(i + 2, organizer.length());
+
         entrydb.delete("websites", "_id =" + id, null);
+        entrydb.delete("events", "location =" + organizer, null);
     }
 
-    public void saveEvent(long id){
+    public void saveEvent(long id, int bool){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("saved", 1);
+        cv.put("saved", bool);
         entrydb.update("events", cv, "_id =" + id, null);
     }
 

@@ -2,6 +2,7 @@ package com.example.s156543.eventjes;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -114,16 +115,14 @@ public class CalendarActivity extends AppCompatActivity {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
             Cursor click  = (Cursor) adapterView.getItemAtPosition(i);
 
-//            String entryTitle = click.getString(click.getColumnIndex("title"));
-//            String entryOrg = click.getString(click.getColumnIndex("organizer"));
 
             // Clicked category is passed to the MenuActivity
             Intent intent = new Intent(CalendarActivity.this, DetailActivity.class);
-
-            intent.putExtra("title", click.getColumnIndex("title"));
-            intent.putExtra("organizer", click.getColumnIndex("location"));
+            String loc = String.valueOf(click.getColumnIndex("location"));
+            intent.putExtra("save", save);
             intent.putExtra("position", i);
 
             startActivity(intent);

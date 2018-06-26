@@ -43,13 +43,8 @@ public class SettingsActivity extends AppCompatActivity {
         db = eventDatabase.getInstance(getApplicationContext());
         Cursor c = db.selectAllWebsites();
 
-        ArrayList<String> urls = new ArrayList<String>();
-        while(c.moveToNext()){
-            String url = c.getString(c.getColumnIndex("url"));
-            urls.add(url);
-        }
 
-        adapter = new SettingsAdapter(this, R.layout.website_row, urls);
+        adapter = new SettingsAdapter(this, c, true);
         ListView sl = findViewById(R.id.scrollList);
         sl.setAdapter((ListAdapter) adapter);
 
@@ -74,17 +69,8 @@ public class SettingsActivity extends AppCompatActivity {
             url = "http://" + url;
         }
         scraper.scrapeTitle(url, db, this);
-        CheckBox party = findViewById(R.id.party);
-        CheckBox intelligent = findViewById(R.id.intelligent);
-        String type;
 
-        if(party.isChecked())
-            type = "party";
-        else if(intelligent.isChecked())
-            type = "intelligent";
-        else
-            type = "other";
-        WebsiteEntry websiteEntry = new WebsiteEntry(url, type, "standard");
+        WebsiteEntry websiteEntry = new WebsiteEntry(url, "bla", "standard");
         eventDatabase instance = eventDatabase.getInstance(this);
         instance.insertWebsite(websiteEntry);
     }

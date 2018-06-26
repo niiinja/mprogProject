@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/holo_red_dark"
     android:orientation="vertical"
     app:layout_anchorGravity="bottom|end"
     tools:context="com.example.s156543.eventjes.DetailActivity">
@@ -15,63 +16,97 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
-                        <ToggleButton
-                            android:id="@+id/saviour"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:checked="false"
-                            android:text="save"
-                            android:textOff="save"
-                            android:textOn="saved" />
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:paddingTop="30dp">
 
-                        <TextView
-                            android:id="@+id/title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:textSize="18sp" />
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight=".2"
+                                    android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/organizer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:paddingTop="10dp"
-                            android:textStyle="italic" />
+                                        <TextView
+                                            android:id="@+id/time"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:paddingLeft="20dp"
+                                            android:paddingRight="20dp"
+                                            android:text="today 20:30"
+                                            android:textColor="@color/colorPrimary"
+                                            android:textStyle="italic" />
 
-                        <TextView
-                            android:id="@+id/date"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="TextView" />
+                                        <TextView
+                                            android:id="@+id/date"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:paddingLeft="20dp"
+                                            android:text="TextView"
+                                            android:textColor="@color/colorPrimary" />
 
-                        <TextView
-                            android:id="@+id/time"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="today 20:30"
-                            android:textStyle="italic" />
+                                        <TextView
+                                            android:id="@+id/title"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:paddingLeft="20dp"
+                                            android:paddingRight="20dp"
+                                            android:textColor="@color/colorPrimary"
+                                            android:textSize="24sp" />
+
+                                        <TextView
+                                            android:id="@+id/organizer"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:paddingLeft="20dp"
+                                            android:paddingRight="20dp"
+                                            android:paddingTop="10dp"
+                                            android:textColor="@color/colorPrimary"
+                                            android:textStyle="italic" />
+
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight=".75"
+                                    android:paddingRight="20dp">
+
+                                        <ToggleButton
+                                            android:id="@+id/saviour"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:checked="false"
+                                            android:text="save"
+                                            android:textOff="save"
+                                            android:textOn="saved"
+                                            android:textSize="8sp" />
+                                </RelativeLayout>
+
+                        </LinearLayout>
 
                         <ImageView
                             android:id="@+id/img"
                             android:layout_width="match_parent"
                             android:layout_height="300dp"
-                            android:padding="20dp"
+                            android:paddingBottom="10dp"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:paddingTop="10dp"
                             app:srcCompat="@android:color/darker_gray" />
 
                         <TextView
                             android:id="@+id/description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingBottom="30dp"
                             android:paddingLeft="20dp"
                             android:paddingRight="20dp"
-                            android:text="The dreams that stay in our awoken mind, are often auditory and visual impressions. Dreams can feel so real, but can olfactory impressions also play a part in them, and is it possible to recollect these too? Scented dreams are a rare phenomenon that have been reported in few scientific studies, most of them done by olfactory experts and perfumers. During this Odorama edition, scent experts and dreamers alike will show you how to broaden your recollection of dreams, and how this can be significant in our lives.  Odorama is a collaboration between Mediamatic and Caro Verbeek. This edition is curated by Sanne Groeneveld and co-curated by Caro Verbeek."
+                            android:textColor="@color/colorPrimary"
                             android:textSize="14sp" />
                 </LinearLayout>
         </ScrollView>
