@@ -33,17 +33,18 @@
         style="@android:style/Widget.DeviceDefault.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/scrollView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="170dp"
         android:layout_weight="1"
         android:text="add"
         android:textSize="12sp" />
 
     <ListView
-        android:id="@+id/scrollList"
+        android:id="@+id/websiteList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:padding="20dp" />
 
     <Button
         android:id="@+id/remove"
@@ -53,21 +54,12 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="400dp"
         android:text="remove"
-        android:textSize="12sp" />
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-
-    </ScrollView>
+        android:textSize="12sp" /><![CDATA[
 
 
     android:layout_weight="1"
     android:text="Return" />
 
 
+]]>
 </RelativeLayout>

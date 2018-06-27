@@ -1,9 +1,6 @@
 package com.example.s156543.eventjes;
 
 import android.app.Activity;
-import android.os.Parcelable;
-import android.widget.Adapter;
-import android.widget.ListView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,8 +10,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +25,7 @@ public class Scraper {
 
     }
 
-    public void scrapeTitle(String u, eventDatabase eventdatabase, final Activity activity) {
+    public void scrapeForEvents(String u, eventDatabase eventdatabase, final Activity activity) {
 
         final String url = u;
         final eventDatabase db = eventdatabase;
@@ -39,60 +34,53 @@ public class Scraper {
             @Override
             public void run() {
                 try {
-                    // SELECT url FROM websites
                     Document doc = Jsoup.connect(url).get();
-                    // kk leluuuuukkkkkkkk
-                    Elements titles = null;
-                    Elements h1s = doc.select("h1");
-                    Elements h2s = doc.select("h2");
-                    Elements h3s = doc.select("h3");
-                    Elements h4s = doc.select("h4");
-
-                    titles = h1s;
-
-                    if (h2s.size() > titles.size()) {
-                        titles = h2s;
-                    }
-
-                    if (h3s.size() > titles.size()) {
-                        titles = h3s;
-                    }
-
-                    if (h4s.size() > titles.size()) {
-                        titles = h4s;
-                    }
+                    Elements titles = scrapeTitles(doc);
 
                     int count = 0;
+                    for (Element t : titles) {
 
-                        for (Element t : titles) {
+                        String imgUrl = findImg(t.parent().parent(), url);
+                        if(imgUrl == null){
+                            Element body = doc.body();
+                            imgUrl = findImg(body, url);
 
-                            String imgUrl = findImg(doc, t, url);
-                            String org = getOrganizer(url);
-                            String u = t.parent().selectFirst("a[href]").attr("abs:href");
-
-                            String date = scrapeDate(u);
-                            String time = scrapeTime(t, u, t.text());
-                            java.sql.Date sqlDate = null;
-                            try {
-                                sqlDate = parseDate(date, time);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-
-
-                            EventEntry eventEntry = new EventEntry(org, t.text(), time,
-                            date, sqlDate, imgUrl, "standard", u,
-                            "no description", false);
-                            db.insertEvent(eventEntry);
-                            count += 1;
-
-                            if(count >= 30){
-                                break;
-                            }
+                            if(imgUrl == null)
+                                imgUrl = "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.temple.edu%2Fprovost%2Fimages%2Ffaculty%2Fnot-pictured.jpg&f=1";
                         }
-                } catch (IOException e) {
-                }
 
+                        String org = getOrganizer(url);
+                        String u = t.parent().selectFirst("a[href]").attr("abs:href");
+
+                        String date = scrapeDate(t.parent());
+                        if (date == null) {
+                            Document eventDoc = Jsoup.connect(u).get();
+                            Element body = eventDoc.selectFirst("body");
+                            date = scrapeDate(body);
+                        }
+
+                        String time = scrapeTime(t, u, t.text());
+                        java.sql.Date sqlDate = null;
+                        try {
+                            sqlDate = parseDate(date, time);
+                        }
+                        catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        EventEntry eventEntry = new EventEntry(org, t.text(), time,
+                        date, sqlDate, imgUrl, "standard", u,
+                        "no description", false);
+                        db.insertEvent(eventEntry);
+                        count += 1;
+
+                        if(count >= 100){
+                            break;
+                        }
+                    }
+                }
+                catch (IOException e) {
+                }
                 activity.runOnUiThread(new Runnable() {
 
                     @Override
@@ -103,6 +91,30 @@ public class Scraper {
             }
         }
         ).start();
+    }
+
+    private Elements scrapeTitles(Document doc){
+        Elements titles = null;
+        Elements h1s = doc.select("h1");
+        Elements h2s = doc.select("h2");
+        Elements h3s = doc.select("h3");
+        Elements h4s = doc.select("h4");
+
+        titles = h1s;
+
+        if (h2s.size() > titles.size()) {
+            titles = h2s;
+        }
+
+        if (h3s.size() > titles.size()) {
+            titles = h3s;
+        }
+
+        if (h4s.size() > titles.size()) {
+            titles = h4s;
+        }
+
+        return titles;
     }
 
     // Edits the website URL into the name of the organizer
@@ -119,10 +131,10 @@ public class Scraper {
     }
 
     // Selects the image in the parent of the parent of the title's element
-    private String findImg(Document doc, Element t, String url) {
-        Element grandparent = t.parent().parent();
-        Element image = grandparent.select("img").first();
-        String imageHref;
+    private String findImg(Element element, String url) {
+
+        Element image = element.select("img").first();
+        String imageHref = null;
 
         if (image != null) {
             imageHref = image.attr("src");
@@ -135,7 +147,7 @@ public class Scraper {
                 imageHref = url.substring(0, indexSlash) + imageHref;
                 }
             }
-        else imageHref = "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.temple.edu%2Fprovost%2Fimages%2Ffaculty%2Fnot-pictured.jpg&f=1";
+
         return imageHref;
     }
 
@@ -211,79 +223,69 @@ public class Scraper {
         return time;
     }
 
-    private String scrapeDate(final String url) throws IOException {
+    private String scrapeDate(Element element){
+            String date = null;
+            Element body = element;
+            Matcher matcher;
 
-            String date = "01/01";
-            String u = url;
+            Pattern pattern = Pattern.compile("(0?[1-9]|[12][0-9]|3[01])\\D" +
+                    "(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May?|Jun(?:e)?|Jul(?:y)?|" +
+                    "Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)? | januari?" +
+                    "februari?|maart?|april?|mei?|juni?|juli?|augustus?|september?|oktober?|" +
+                    "november?|december?)");
 
+            matcher = pattern.matcher(body.toString());
 
-                // SELECT url FROM websites
-            try {
-                Document doc = Jsoup.connect(u).get();
-                Element body = doc.selectFirst("body");
+            if (matcher.find()) {
+                date = matcher.group();
 
-                Pattern pattern = Pattern.compile("(0?[1-9]|[12][0-9]|3[01])\\D" +
-                        "(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May?|Jun(?:e)?|Jul(?:y)?|" +
-                        "Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)? | januari?" +
-                        "februari?|maart?|april?|mei?|juni?|juli?|augustus?|september?|oktober?|" +
-                        "november?|december?)");
+                if (!isDigit(date.charAt(1)))
+                    date = '0' + date;
 
-                Matcher matcher;
-                matcher = pattern.matcher(body.toString());
-
-                if (matcher.find()) {
-                    date = matcher.group();
-
-                    if (!isDigit(date.charAt(1)))
-                        date = '0' + date;
-
-                    date = date.substring(0, 2) + '/' + date.substring(3);
-                    String days = date.substring(0, 3);
-                    String m = date.substring(3);
-
-                    if (m.equals("Jan")  || m.equals("January")|| m.equals("januari")){
-                        date = days + "01";
-                    }
-                    else if (m.equals("Feb")|| m.equals("February")|| m.equals("februari")){
-                        date = days + "02";
-                    }
-                    else if (m.equals("Mar")|| m.equals("March")|| m.equals("maart")){
-                        date = days + "03";
-                    }
-                    else if (m.equals("Apr")|| m.equals("April")|| m.equals("april")) {
-                        date = days + "04";
-                    }
-                    else if (m.equals("May")|| m.equals("mei")){
-                        date = days + "05";
-                    }
-                    else if (m.equals("Jun")|| m.equals("June")|| m.equals("juni")) {
-                        date = days + "06";
-                    }
-                    else if (m.equals("July")|| m.equals("Jul")| m.equals("juli")) {
-                        date = days + "07";
-                    }
-                    else if (m.equals("Aug")|| m.equals("August")|| m.equals("augustus")) {
-                        date = days + "08";
-                    }
-                    else if (m.equals("Sep")|| m.equals("September")|| m.equals("september")) {
-                        date = days + "09";
-                    }
-                    else if (m.equals("Oct")|| m.equals("October")|| m.equals("oktober")){
-                        date = days + "10";
-                    }
-                    else if (m.equals("Nov")|| m.equals("November")|| m.equals("november")) {
-                        date = days + "11";
-                    }
-                    else if (m.equals("Dec")|| m.equals("December")|| m.equals("december")) {
-                        date = days + "12";
-                    }
+                date = date.substring(0, 2) + '/' + date.substring(3);
+                String days = date.substring(0, 3);
+                String m = date.substring(3);
+                m = m.toLowerCase();
+                if (m.equals("jan")|| m.equals("january")|| m.equals("januari")){
+                    date = days + "01";
+                }
+                else if (m.equals("feb")|| m.equals("february")|| m.equals("februari")){
+                    date = days + "02";
+                }
+                else if (m.equals("mar")|| m.equals("march")|| m.equals("maart")){
+                    date = days + "03";
+                }
+                else if (m.equals("apr")|| m.equals("april")){
+                    date = days + "04";
+                }
+                else if (m.equals("may")|| m.equals("mei")){
+                    date = days + "05";
+                }
+                else if (m.equals("jun")|| m.equals("june")|| m.equals("juni")) {
+                    date = days + "06";
+                }
+                else if (m.equals("jul")|| m.equals("july")| m.equals("juli")) {
+                    date = days + "07";
+                }
+                else if (m.equals("aug")|| m.equals("august")|| m.equals("augustus")) {
+                    date = days + "08";
+                }
+                else if (m.equals("sep")|| m.equals("september")) {
+                    date = days + "09";
+                }
+                else if (m.equals("oct")|| m.equals("october")|| m.equals("oktober")
+                        ||m.equals("okt")){
+                    date = days + "10";
+                }
+                else if (m.equals("nov")|| m.equals("november")){
+                    date = days + "11";
+                }
+                else if (m.equals("dec")|| m.equals("december")) {
+                    date = days + "12";
                 }
             }
-            catch (Exception e){
-                    date = "error";
-            }
-                return date;
-            }
+            return date;
+        }
 
 
     public static java.sql.Date parseDate(String date, String time) throws ParseException{

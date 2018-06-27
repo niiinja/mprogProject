@@ -86,7 +86,6 @@ public class CalendarActivity extends AppCompatActivity {
                 titlesArray.add(title);
             }
 
-            String url = "bla";
             adapter = new CalendarAdapter(this, c, true);
             lv.setAdapter(adapter);
             return;
@@ -110,18 +109,15 @@ public class CalendarActivity extends AppCompatActivity {
 
     }
 
-    // Listener on the Lisview which checks whether a user clicks a category
+    // Listener on the Listview which checks whether a user clicks a category
     private class ListViewClickListener implements AdapterView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
             Cursor click  = (Cursor) adapterView.getItemAtPosition(i);
-
 
             // Clicked category is passed to the MenuActivity
             Intent intent = new Intent(CalendarActivity.this, DetailActivity.class);
-            String loc = String.valueOf(click.getColumnIndex("location"));
             intent.putExtra("save", save);
             intent.putExtra("position", i);
 

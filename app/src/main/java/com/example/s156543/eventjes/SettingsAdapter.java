@@ -1,6 +1,7 @@
 package com.example.s156543.eventjes;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -23,8 +24,12 @@ import java.util.ArrayList;
 public class SettingsAdapter extends CursorAdapter{
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        return LayoutInflater.from(context).inflate(R.layout.website_row, viewGroup, false);
+    public View newView(final Context context, Cursor cursor, ViewGroup viewGroup) {
+        View view = LayoutInflater.from(context).inflate(R.layout.website_row, viewGroup, false);
+        view.setClickable(true);
+        view.setFocusable(true);
+        view.setBackgroundResource(android.R.drawable.menuitem_background);
+        return view;
     }
 
     @Override

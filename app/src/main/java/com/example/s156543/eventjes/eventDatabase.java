@@ -62,7 +62,7 @@ public class eventDatabase extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         String dateString;
         if(eventEntry.dateTime != null) dateString = eventEntry.dateTime.toString();
-        else dateString = "1970-12-31 00:00:00";
+        else dateString = "1970-01-01 00:00:00";
 
         contentValues.put("title", eventEntry.title);
         contentValues.put("location", eventEntry.organizer);
@@ -74,11 +74,10 @@ public class eventDatabase extends SQLiteOpenHelper {
         contentValues.put("eventurl", eventEntry.eventUrl);
         contentValues.put("description", eventEntry.description);
 
-        if(eventEntry.saved){
+        if(eventEntry.saved)
             contentValues.put("saved", 1);
-        }
-        else{ contentValues.put("saved", 0);}
-
+        else
+            contentValues.put("saved", 0);
         entrydb.insert("events", null, contentValues);
     }
 
@@ -115,16 +114,10 @@ public class eventDatabase extends SQLiteOpenHelper {
         entrydb.update("events", cv, "_id =" + id, null);
     }
 
-    public void deleteWebsite(long id){
+    public void deleteWebsite(String title){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
-        Cursor c = selectAllWebsites();
-        String site = "";
-        if( c.moveToNext()){
-            if(c.getLong(c.getColumnIndex("_id")) == id){
-                site = c.getString(c.getColumnIndex("url"));
-            }
-        }
-        String organizer = site;
+        String organizer = title;
+
         int index = organizer.indexOf(".");
         if (index > 0)
             organizer = organizer.substring(0, index);
@@ -132,8 +125,8 @@ public class eventDatabase extends SQLiteOpenHelper {
         if (i > 0)
             organizer = organizer.substring(i + 2, organizer.length());
 
-        entrydb.delete("websites", "_id =" + id, null);
-        entrydb.delete("events", "location =" + organizer, null);
+        entrydb.delete("websites", "url = ?", new String[]{title});
+        entrydb.delete("events", "location = ?", new String[]{organizer});
     }
 
     public void saveEvent(long id, int bool){

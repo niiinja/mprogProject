@@ -8,10 +8,13 @@
 
     <CheckBox
         android:id="@+id/checkWebsite"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="CheckBox"
+        android:onClick="clickedBox"
+        android:text="@string"
         android:textColor="@color/colorPrimary" />
+        <!--android:focusable="false"-->
+        <!--android:focusableInTouchMode="false"-->
 
 </LinearLayout>

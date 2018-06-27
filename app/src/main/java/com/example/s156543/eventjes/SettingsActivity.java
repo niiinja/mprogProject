@@ -14,13 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
     Button addBtn;
     SettingsAdapter adapter;
-    Button removeBTN;
-    ArrayList<Integer> selected = new ArrayList<>();
+    Button removeBtn;
+    ArrayList<String> selected = new ArrayList<>();
     eventDatabase db;
     Scraper scraper;
     @Override
@@ -33,33 +34,15 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){ addButton();}
         });
-
-        removeBTN = (Button) findViewById(R.id.remove);
-        removeBTN.setOnClickListener(new View.OnClickListener(){
+        removeBtn = (Button) findViewById(R.id.remove);
+        removeBtn.setOnClickListener(new View.OnClickListener(){
             @Override
                     public void onClick(View view){ removeButton();}
         });
-
         db = eventDatabase.getInstance(getApplicationContext());
-        Cursor c = db.selectAllWebsites();
-
-
-        adapter = new SettingsAdapter(this, c, true);
-        ListView sl = findViewById(R.id.scrollList);
-        sl.setAdapter((ListAdapter) adapter);
-
-        sl.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // When clicked, show a toast with the TextView text
-                EventEntry eventEntry = (EventEntry) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(),
-                        "Clicked on Row: " + eventEntry.title,
-                        Toast.LENGTH_LONG).show();
-                selected.add(position);
-            }
-        });
         scraper = new Scraper();
+
+        updateAdapter();
     }
 
     private void addButton(){
@@ -68,21 +51,39 @@ public class SettingsActivity extends AppCompatActivity {
         if (url.substring(0,3) != "http"){
             url = "http://" + url;
         }
-        scraper.scrapeTitle(url, db, this);
+        scraper.scrapeForEvents(url, db, this);
 
         WebsiteEntry websiteEntry = new WebsiteEntry(url, "bla", "standard");
         eventDatabase instance = eventDatabase.getInstance(this);
         instance.insertWebsite(websiteEntry);
+
+        Toast.makeText(getApplicationContext(),
+                "Added website: " + url,
+                Toast.LENGTH_LONG).show();
+
+        updateAdapter();
     }
 
     private void removeButton(){
-        //welke zijn er aangeklikt
-
-        // zoek index in de array
-        for(int id : selected){
-            long ID = new Long(id);
-            db.deleteWebsite(ID);
+        for(String t : selected){
+            db.deleteWebsite(t);
+            Toast.makeText(getApplicationContext(),
+                    "Removed website: " + t,
+                    Toast.LENGTH_SHORT).show();
         }
-        //verwijder die id uit de db
+        updateAdapter();
+    }
+
+
+    public void clickedBox(View view){
+        String title = ((CheckBox) view).getText().toString();
+        selected.add(title);
+    }
+
+    private void updateAdapter(){
+        Cursor c = db.selectAllWebsites();
+        adapter = new SettingsAdapter(this, c, true);
+        ListView websiteList = findViewById(R.id.websiteList);
+        websiteList.setAdapter((ListAdapter) adapter);
     }
 }
