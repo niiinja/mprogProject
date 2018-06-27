@@ -13,11 +13,15 @@ import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
+/**
+ * This activity scrapes for an event's description,
+ * and displays the event details from the database.
+ */
+
 public class DetailActivity extends AppCompatActivity {
-    String calendarName;
     int position;
     boolean save;
-    eventDatabase db;
+    EventDatabase db;
     Cursor c;
     String description = null;
 
@@ -39,7 +43,7 @@ public class DetailActivity extends AppCompatActivity {
 
         position = (int) intent.getSerializableExtra("position") + 1;
         save = (boolean) intent.getSerializableExtra("save");
-        db = eventDatabase.getInstance(getApplicationContext());
+        db = EventDatabase.getInstance(getApplicationContext());
 
         if(save)
             c = db.selectSavedEvents();
@@ -78,11 +82,10 @@ public class DetailActivity extends AppCompatActivity {
 
         saviour.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if (isChecked)
                     save(1);
-                } else {
-                    save(0);
-                }
+
+                else save(0);
             }
         });
 
@@ -94,12 +97,10 @@ public class DetailActivity extends AppCompatActivity {
 
     public void updateDescription(){
         c = db.selectAllEvents();
-        if (c.move(position)){
+        if (c.move(position))
             description = c.getString(c.getColumnIndex("description"));
-        }
 
         TextView desView = findViewById(R.id.description);
         desView.setText(description);
     }
-
-    }
+}

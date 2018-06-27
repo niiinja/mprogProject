@@ -13,17 +13,23 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+/**
+ * Users can manage websites in this activity, which will be scraped for events once they are added.
+ */
 
 public class SettingsActivity extends AppCompatActivity {
     Button addBtn;
     SettingsAdapter adapter;
     Button removeBtn;
     ArrayList<String> selected = new ArrayList<>();
-    eventDatabase db;
+    EventDatabase db;
     Scraper scraper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
                     public void onClick(View view){ removeButton();}
         });
-        db = eventDatabase.getInstance(getApplicationContext());
+        db = EventDatabase.getInstance(getApplicationContext());
         scraper = new Scraper();
 
         updateAdapter();
@@ -51,16 +57,18 @@ public class SettingsActivity extends AppCompatActivity {
         if (url.substring(0,3) != "http"){
             url = "http://" + url;
         }
-        scraper.scrapeForEvents(url, db, this);
-
+        try {
+            scraper.scrapeForEvents(url, db, this);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         WebsiteEntry websiteEntry = new WebsiteEntry(url, "bla", "standard");
-        eventDatabase instance = eventDatabase.getInstance(this);
+        EventDatabase instance = EventDatabase.getInstance(this);
         instance.insertWebsite(websiteEntry);
 
         Toast.makeText(getApplicationContext(),
                 "Added website: " + url,
                 Toast.LENGTH_LONG).show();
-
         updateAdapter();
     }
 
@@ -73,7 +81,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
         updateAdapter();
     }
-
 
     public void clickedBox(View view){
         String title = ((CheckBox) view).getText().toString();

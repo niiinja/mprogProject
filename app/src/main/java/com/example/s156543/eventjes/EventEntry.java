@@ -11,7 +11,6 @@ public class EventEntry {
     String time;
     String date;
     java.sql.Date dateTime;
-    String type;
     String imgUrl;
     String eventUrl;
     String description;
@@ -19,67 +18,20 @@ public class EventEntry {
     boolean saved;
 
     public EventEntry(String organizer, String title, String time, String date, java.sql.Date dateTime,
-                      String imgUrl, String type, String eventUrl, String description, boolean saved) {
+                      String imgUrl, String eventUrl, String description, boolean saved) {
 
         this.organizer = organizer;
         this.title = title;
         this.time = time;
         this.date = date;
         this.dateTime = dateTime;
-        this.type = type;
         this.imgUrl = imgUrl;
         this.eventUrl = eventUrl;
         this.description = description;
         this.saved = saved;
     }
 
-    public String getOrganizer() {
-        return organizer;
-    }
 
-    public void setOrganizer(String organizer) {
-        this.organizer = organizer;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public java.sql.Date getPrice() {
-        return dateTime;
-    }
-
-    public void setPrice(String price) {
-        this.dateTime = dateTime;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
 
 }

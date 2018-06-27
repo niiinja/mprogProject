@@ -15,47 +15,35 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by s156543 on 7-6-2018.
+ * This adapter displays the events coming from the database as rows in a list in CalendarActivity
  */
 
 public class CalendarAdapter extends CursorAdapter{
-
-    String url;
-    String title;
-    String time;
-    String date;
 
     public CalendarAdapter(Context context, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);
     }
 
-
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
         return LayoutInflater.from(context).inflate(R.layout.eventlist_row, viewGroup, false);
-
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-
-        TextView titleView = (TextView) view.findViewById(R.id.title);
-        TextView locView = (TextView) view.findViewById(R.id.location);
+        TextView titleView = view.findViewById(R.id.title);
+        TextView locView = view.findViewById(R.id.location);
         TextView timeView = view.findViewById(R.id.time);
         TextView dateView = view.findViewById(R.id.date);
 
-
-        title = cursor.getString(cursor.getColumnIndex("title"));
-        url = cursor.getString(cursor.getColumnIndex("location"));
-        time = cursor.getString(cursor.getColumnIndex("time"));
-        date = cursor.getString(cursor.getColumnIndex("date"));
+        String title = cursor.getString(cursor.getColumnIndex("title"));
+        String url = cursor.getString(cursor.getColumnIndex("location"));
+        String time = cursor.getString(cursor.getColumnIndex("time"));
+        String date = cursor.getString(cursor.getColumnIndex("date"));
 
         titleView.setText(title);
-
         locView.setText(url);
-
         timeView.setText(time);
         dateView.setText(date);
-
     }
 }

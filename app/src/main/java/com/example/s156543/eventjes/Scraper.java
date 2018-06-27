@@ -8,12 +8,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Character.isDigit;
+import static java.lang.Character.isJavaIdentifierPart;
 
 /**
  * Created by s156543 on 11-6-2018.
@@ -22,13 +25,12 @@ import static java.lang.Character.isDigit;
 public class Scraper {
 
     public Scraper() {
-
     }
 
-    public void scrapeForEvents(String u, eventDatabase eventdatabase, final Activity activity) {
-
+    public void scrapeForEvents(String u, EventDatabase eventdatabase, final Activity activity)
+                                throws  UnknownHostException{
         final String url = u;
-        final eventDatabase db = eventdatabase;
+        final EventDatabase db = eventdatabase;
 
         new Thread(new Runnable() {
             @Override
@@ -52,15 +54,26 @@ public class Scraper {
                         String org = getOrganizer(url);
                         String u = t.parent().selectFirst("a[href]").attr("abs:href");
 
+
                         String date = scrapeDate(t.parent());
+
                         if (date == null) {
+                            try{
                             Document eventDoc = Jsoup.connect(u).get();
                             Element body = eventDoc.selectFirst("body");
                             date = scrapeDate(body);
+                            }
+                            catch(Exception e){
+                                date = "01/01";
+                            }
                         }
+
+                        if(date == "bad")
+                            continue;
 
                         String time = scrapeTime(t, u, t.text());
                         java.sql.Date sqlDate = null;
+
                         try {
                             sqlDate = parseDate(date, time);
                         }
@@ -69,8 +82,8 @@ public class Scraper {
                         }
 
                         EventEntry eventEntry = new EventEntry(org, t.text(), time,
-                        date, sqlDate, imgUrl, "standard", u,
-                        "no description", false);
+                        date, sqlDate, imgUrl, u, "no description", false);
+
                         db.insertEvent(eventEntry);
                         count += 1;
 
@@ -80,6 +93,8 @@ public class Scraper {
                     }
                 }
                 catch (IOException e) {
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
                 activity.runOnUiThread(new Runnable() {
 
@@ -102,9 +117,8 @@ public class Scraper {
 
         titles = h1s;
 
-        if (h2s.size() > titles.size()) {
+        if (h2s.size() > titles.size())
             titles = h2s;
-        }
 
         if (h3s.size() > titles.size()) {
             titles = h3s;
@@ -152,10 +166,10 @@ public class Scraper {
     }
 
     // Scrapes the description: the first paragraph on the event's page.
-    public void scrapeP(String eventUrl, final eventDatabase eventdatabase, long ID, DetailActivity act) {
+    public void scrapeP(String eventUrl, final EventDatabase eventdatabase, long ID, DetailActivity act) {
         final String url = eventUrl;
         final DetailActivity activity = act;
-        final eventDatabase db = eventdatabase;
+        final EventDatabase db = eventdatabase;
         final long id = ID;
 
         new Thread(new Runnable() {
@@ -223,7 +237,7 @@ public class Scraper {
         return time;
     }
 
-    private String scrapeDate(Element element){
+    private String scrapeDate(Element element) throws ParseException {
             String date = null;
             Element body = element;
             Matcher matcher;
@@ -232,7 +246,8 @@ public class Scraper {
                     "(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May?|Jun(?:e)?|Jul(?:y)?|" +
                     "Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)? | januari?" +
                     "februari?|maart?|april?|mei?|juni?|juli?|augustus?|september?|oktober?|" +
-                    "november?|december?)");
+                    "november?|december?|" +
+                    "JAN?|FEB?|MRT?|APR?|MEI?|JU(?:N)?|JU(?:L)?|AUG?|SEP?|OKT?|NOV?|DEC?)");
 
             matcher = pattern.matcher(body.toString());
 
@@ -252,7 +267,7 @@ public class Scraper {
                 else if (m.equals("feb")|| m.equals("february")|| m.equals("februari")){
                     date = days + "02";
                 }
-                else if (m.equals("mar")|| m.equals("march")|| m.equals("maart")){
+                else if (m.equals("mar")|| m.equals("mrt")|| m.equals("march")|| m.equals("maart")){
                     date = days + "03";
                 }
                 else if (m.equals("apr")|| m.equals("april")){
@@ -284,6 +299,24 @@ public class Scraper {
                     date = days + "12";
                 }
             }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String dt = date + "/" + "2018";
+        LocalDate localDate = LocalDate.now();
+        String localdatetime = String.valueOf(localDate);
+        localdatetime = localdatetime.substring(8, 10) + "/" + localdatetime.substring(5,7) + "/" + localdatetime.substring(0,4);
+
+        try{
+        java.util.Date localDateTime = sdf.parse(localdatetime);
+        java.util.Date dateTime = sdf.parse(dt);
+
+        if(localDateTime.after(dateTime)){
+            return "bad";
+        }
+        }
+        catch (ParseException p){
+        }
+
             return date;
         }
 
@@ -292,6 +325,7 @@ public class Scraper {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM hh:mm");
         String dt = date + " " + time;
         java.util.Date dateTime = sdf.parse(dt);
+
         java.sql.Date sqldate = new java.sql.Date(dateTime.getTime());
         return  sqldate;
     }

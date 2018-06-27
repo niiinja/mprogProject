@@ -10,10 +10,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by s156543 on 8-6-2018.
  */
 
-public class eventDatabase extends SQLiteOpenHelper {
-    private static eventDatabase instance;
+public class EventDatabase extends SQLiteOpenHelper {
+    private static EventDatabase instance;
 
-    private eventDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    private EventDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
 
@@ -21,7 +21,7 @@ public class eventDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         SQLiteDatabase db = sqLiteDatabase;
         String query = "CREATE TABLE events (_id INTEGER PRIMARY KEY, title STRING, location STRING," +
-                " date STRING, time STRING, datetime DATETIME, imgurl STRING, type STRING, eventurl STRING," +
+                " date STRING, time STRING, datetime DATETIME, imgurl STRING, eventurl STRING," +
                 "description STRING, saved BIT);";
         db.execSQL(query);
         query = "CREATE TABLE websites (_id INTEGER PRIMARY KEY, url STRING, type STRING, method STRING);";
@@ -38,9 +38,9 @@ public class eventDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public  static eventDatabase getInstance(Context context){
+    public  static EventDatabase getInstance(Context context){
         if(instance == null){
-            instance = new eventDatabase(context, null, null, 1);
+            instance = new EventDatabase(context, null, null, 1);
         }
         return instance;
     }
@@ -70,7 +70,6 @@ public class eventDatabase extends SQLiteOpenHelper {
         contentValues.put("time", eventEntry.time);
         contentValues.put("datetime", dateString);
         contentValues.put("imgurl", eventEntry.imgUrl);
-        contentValues.put("type", eventEntry.type);
         contentValues.put("eventurl", eventEntry.eventUrl);
         contentValues.put("description", eventEntry.description);
 
@@ -81,7 +80,7 @@ public class eventDatabase extends SQLiteOpenHelper {
         entrydb.insert("events", null, contentValues);
     }
 
-    // grabs all journal entries
+    // grabs all websites
     public Cursor selectAllWebsites(){
         SQLiteDatabase selectAlldb = this.getWritableDatabase();
         Cursor cursor = selectAlldb.rawQuery("SELECT * FROM websites", null);
