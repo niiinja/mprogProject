@@ -16,10 +16,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Character.isDigit;
-import static java.lang.Character.isJavaIdentifierPart;
 
 /**
- * Created by s156543 on 11-6-2018.
+ * The Scraper handles the scraping of the events, by first scraping a website's HTML for event
+ * titles, and then by looking for nearby dates, times, images and more.
  */
 
 public class Scraper {
@@ -48,13 +48,13 @@ public class Scraper {
                             imgUrl = findImg(body, url);
 
                             if(imgUrl == null)
-                                imgUrl = "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.temple.edu%2Fprovost%2Fimages%2Ffaculty%2Fnot-pictured.jpg&f=1";
+                                imgUrl = "https://proxy.duckduckgo.com/iu/?u=" +
+                                        "http%3A%2F%2Fwww.temple.edu%2Fprovost%2Fimages%" +
+                                        "2Ffaculty%2Fnot-pictured.jpg&f=1";
                         }
 
                         String org = getOrganizer(url);
                         String u = t.parent().selectFirst("a[href]").attr("abs:href");
-
-
                         String date = scrapeDate(t.parent());
 
                         if (date == null) {
@@ -67,7 +67,7 @@ public class Scraper {
                                 date = "01/01";
                             }
                         }
-
+                        // Stop scraping events that have already taken place
                         if(date == "bad")
                             continue;
 
@@ -81,15 +81,14 @@ public class Scraper {
                             e.printStackTrace();
                         }
 
+                        // Create eventobject and store it in the database
                         EventEntry eventEntry = new EventEntry(org, t.text(), time,
                         date, sqlDate, imgUrl, u, "no description", false);
-
                         db.insertEvent(eventEntry);
-                        count += 1;
 
-                        if(count >= 100){
-                            break;
-                        }
+                        // Scrape max. 100 events of a website
+                        count += 1;
+                        if(count >= 100) break;
                     }
                 }
                 catch (IOException e) {
@@ -108,8 +107,9 @@ public class Scraper {
         ).start();
     }
 
+    // Scrapes for titles, assuming that the event title will be in the most frequent header type
     private Elements scrapeTitles(Document doc){
-        Elements titles = null;
+        Elements titles;
         Elements h1s = doc.select("h1");
         Elements h2s = doc.select("h2");
         Elements h3s = doc.select("h3");
@@ -120,13 +120,11 @@ public class Scraper {
         if (h2s.size() > titles.size())
             titles = h2s;
 
-        if (h3s.size() > titles.size()) {
+        if (h3s.size() > titles.size())
             titles = h3s;
-        }
 
-        if (h4s.size() > titles.size()) {
+        if (h4s.size() > titles.size())
             titles = h4s;
-        }
 
         return titles;
     }
@@ -144,9 +142,9 @@ public class Scraper {
         return organizer;
     }
 
-    // Selects the image in the parent of the parent of the title's element
+    // Selects the image in the parent of the parent of the title's element,
+    // or if that fails in the entire <body>
     private String findImg(Element element, String url) {
-
         Element image = element.select("img").first();
         String imageHref = null;
 
@@ -165,7 +163,7 @@ public class Scraper {
         return imageHref;
     }
 
-    // Scrapes the description: the first paragraph on the event's page.
+    // Scrapes the description, assuming it is the largest paragraph on the event's page.
     public void scrapeP(String eventUrl, final EventDatabase eventdatabase, long ID, DetailActivity act) {
         final String url = eventUrl;
         final DetailActivity activity = act;
@@ -202,6 +200,7 @@ public class Scraper {
         }).start();
     }
 
+    // Scrapes the time, by searching for a hh:mm pattern nearby the event title
     public String scrapeTime(Element t, String u, String title) throws IOException {
         Pattern pattern = Pattern.compile("([0-9]|0[0-9]|1[0-9]|2[0-3])(:|\\.)([0-5][0-9])");
         String time = "00:00";
@@ -229,14 +228,14 @@ public class Scraper {
                 }
             }
         }
-        if(time.length() <= 4){
+        if(time.length() <= 4)
             time = "0"+time;
-        }
 
         time = time.substring(0,2) + ':' + time.substring(3);
         return time;
     }
 
+    // Scrapes the date by searching for a dd/mm pattern nearby the title or on the eventpage
     private String scrapeDate(Element element) throws ParseException {
             String date = null;
             Element body = element;
@@ -254,6 +253,7 @@ public class Scraper {
             if (matcher.find()) {
                 date = matcher.group();
 
+                // Convert the date string into a general format
                 if (!isDigit(date.charAt(1)))
                     date = '0' + date;
 
@@ -300,27 +300,28 @@ public class Scraper {
                 }
             }
 
+        // Compare event date to current date, to determine if the event has already taken place
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String dt = date + "/" + "2018";
         LocalDate localDate = LocalDate.now();
         String localdatetime = String.valueOf(localDate);
-        localdatetime = localdatetime.substring(8, 10) + "/" + localdatetime.substring(5,7) + "/" + localdatetime.substring(0,4);
+        localdatetime = localdatetime.substring(8, 10) + "/" + localdatetime.substring(5,7) + "/"
+                + localdatetime.substring(0,4);
 
         try{
         java.util.Date localDateTime = sdf.parse(localdatetime);
         java.util.Date dateTime = sdf.parse(dt);
 
-        if(localDateTime.after(dateTime)){
+        if(localDateTime.after(dateTime))
             return "bad";
-        }
         }
         catch (ParseException p){
         }
 
-            return date;
-        }
+        return date;
+    }
 
-
+    // Convert date and time into a SQL date object, to enable sorting the database on datetime
     public static java.sql.Date parseDate(String date, String time) throws ParseException{
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM hh:mm");
         String dt = date + " " + time;
@@ -329,5 +330,4 @@ public class Scraper {
         java.sql.Date sqldate = new java.sql.Date(dateTime.getTime());
         return  sqldate;
     }
-
 }

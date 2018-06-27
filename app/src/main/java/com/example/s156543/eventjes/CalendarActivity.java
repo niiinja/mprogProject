@@ -66,12 +66,13 @@ public class CalendarActivity extends AppCompatActivity {
 
     }
 
-    // Clicked category is passed to the MenuActivity
+    // Open settings activity
     private void toSettings() {
         Intent intent = new Intent(CalendarActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
 
+    // Update the displayed events from the database
     private void updateData(Boolean save) {
         ListView lv = findViewById(R.id.eventlist);
         EventDatabase db = EventDatabase.getInstance(getApplicationContext());
@@ -103,7 +104,7 @@ public class CalendarActivity extends AppCompatActivity {
         updateData(save);
     }
 
-    // Listener on the Listview which checks whether a user clicks a category
+    // Listener opens the DetailActivity of the selected event
     private class ListViewClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

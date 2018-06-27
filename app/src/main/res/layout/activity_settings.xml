@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="100dp">
-        android:layout_marginTop="50dp"
+        android:paddingTop="60dp">
+        android:layout_marginTop="40dp"
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/input"
@@ -34,16 +34,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="140dp"
         android:layout_weight="1"
+        android:background="@color/colorPrimary"
         android:text="add"
-        android:textSize="12sp" />
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="40dp"
+        android:paddingRight="20dp"
+        android:paddingTop="205dp"
+        android:text="remove websites"
+        android:textColor="@color/colorPrimary" />
 
     <ListView
         android:id="@+id/websiteList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="215dp"
         android:padding="20dp" />
 
     <Button
@@ -52,9 +64,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="500dp"
+        android:background="@color/colorPrimary"
         android:text="remove"
-        android:textSize="12sp" /><![CDATA[
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="10sp" /><![CDATA[
 
 
     android:layout_weight="1"
