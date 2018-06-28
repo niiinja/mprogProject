@@ -1,6 +1,6 @@
 # Design doc
 ## UI design, module+class+function diagrams
-![](/UIdesign.png)
+![](/doc/UIdesign.png)
 
 ## Needed for functionality
 - Volley 
