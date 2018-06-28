@@ -31,8 +31,9 @@ These are some websites to test this application with (in order of most to least
 - ndsm.nl/evenementen
 - radar.squat.net/events/city/Amsterdam
 - meervaart.nl/theater/programma
-- deschoolamsterdam.nl/nl/programma
 - ruigoord.nl
+- deschoolamsterdam.nl/nl/programma
+
 
 ### Classes and modules
 CalendarActivity: displays all the (saved) events that are stored in the database.
