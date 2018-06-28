@@ -91,6 +91,10 @@ Due to a lack of time I focused my efforts on websites that were mainly HTML/CSS
 I did this because I worried that if I did also dive into javascript websites, I would get disappointing results on botch javascript and HTML/CSS websites, and would not have enough time to improve.
 Therefore I decided to focus on HTML/CSS websites.
 
+For UI decisions, I decided to ignore the material design conventions, because in my opinion such conventions create a homogenous world filled with superficial frivolity.
+Instead, I researched brutalist web design which approaches digital design by embracing the medium's most raw and basic visual components, quite alike the brutalist architects and their love of raw concrete.
+I aimed to design my UI along the lines of this vision, for more info and examples of brutalist design see: http://brutalistwebsites.com/
+
 In an ideal world, with more time, I would build enable the Scraper to scrape javascript websites by use of WebClient. I would also implement the filter-on-type function that I neglected to build.
 Another functionality that I would love to implement in the future would be a user-friendly option to tweak a website's scrape rules visually. This would work as the following:
 When user enters an event page URL, the app shows them an example detailActivity, containing the data it has scraped for one event of this page. Then the user can select the
