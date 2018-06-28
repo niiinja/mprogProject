@@ -10,7 +10,7 @@ Since the Cambridge Analytica scandal, a large number of people want to leave Fa
 An application on which the user can find a collection of all the upcoming events of their favourite venues.
 
 ## Visual representation
-![](/doc/sketch.png)
+![](/doc/finalUI.png)
 
 ## Main features and MVP
 -	Add/delete websites of event organizers
