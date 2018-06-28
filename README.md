@@ -1,7 +1,7 @@
 # Eventjes
 Nina Boelsums - 10742670
 
-*Eventjes provides its users with an overview of events of their favorite organizers.*
+*Eventjes provides its users with an overview of events of their favorite organizers, by scraping their websites.*
 
 ## Description
 
