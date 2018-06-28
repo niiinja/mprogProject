@@ -4,6 +4,8 @@ This app is the solution for those who want to leave facebook, but don't want to
 With only a website's event page as input, eventjes collects upcoming events and provides the user with a calendar overview. 
 The user can save the events that they are interested in.
 
+![](/doc/screenshotEventjes.png)
+
 Some websites to test this application with:
 - subbacultcha.nl/events
 - mu.nl/nl/about/agenda
@@ -59,10 +61,23 @@ WebsiteEntry: class for the website entries.
 | saved |
 
 ## Challenges
-Every website's html is quite different. Therefore eventjes tries to make use of generic intuitive design conventions. 
-However, these are not always sufficient. Because I was interested in making 
+Every website's HTML is quite different. Therefore i tried to build Eventjes with generic intuitive design conventions.
+I have not hardcoded any scraping rules for specific websites. The consequence of that is that some websites have better results than others,
+but also that the app is extensible to many different websites.
+Sadly I was not able to scrape websites that make heavy use of javascript because the JSOUP libabry only scrapes HTML.
 
 ## Decisions
-I decided to invest more time into generalizing the scraper rules, in order to get better results , and because it didn't seem to add much to the functionality, I decided to not implement a filtering-on-event type functionalty.
+I decided to invest more time into generalizing the scraper rules, in order to get better results.
+This meant that I had to drop the "filter events on event type" functionality that I had originally planned for my MVP.
+I made this decision because the filtering did not seem to provide a much richer user experience, whilst generalizing the scraper rules would really improve the user experience.
+Also, the scraper rulers seemed more technically interesting and new to me than the filtering option.
+
+In an ideal world, with more time, I would build enable the Scraper to scrape javascript websites by use of WebClient. I would also implement the filter-on-type function that I neglected to build.
+Another functionality that I would love to implement in the future would be a user-friendly option to tweak a website's scrape rules visually. This would work as the following:
+When user enters an event page URL, the app shows them an example detailActivity, containing the data it has scraped for one event of this page. Then the user can select the
+sections which are incorrect. The app wil then provide the user with other options for that section. The user then selects which option is the correct one, and the app saves the corresponding element attributes.
+With these element attributes, the scraper can scrape for the correct sections for all other events of that specific eventpage.
+
+
 
 
