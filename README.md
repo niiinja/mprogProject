@@ -26,7 +26,7 @@ Eventjes solves this problem. Users can simply input the event pages of their fa
 ## Video demo
 https://youtu.be/6Tn8Uopdu7E
 
-
+## Copyright statement
 Copyright (C) 2018  Nina Boelsums
 
 This program is free software: you can redistribute it and/or modify
