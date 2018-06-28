@@ -80,6 +80,8 @@ I have not hardcoded any scraping rules for specific websites. The consequence o
 but also that the app is extensible to many different websites.
 Sadly I was not able to scrape websites that make heavy use of javascript because the JSOUP library only scrapes HTML.
 Other challenges that I encountered all had to do with the Android platform, and I was able to solve them all.
+Regular Expressions
+Multi-Threading
 
 ## Decisions
 I decided to invest more time into generalizing the scraper rules, in order to get better results.
