@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
@@ -31,10 +32,10 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         String title = "title...";
         String organizer = "organizer...";
-        String imgUrl = "https://78.media.tumblr.com/b9846a203d1ae13900848565e068c271/tumblr_p94sl3dytZ1rvzucio1_500.jpg";
+        String imgUrl = "";
         String time = "00:00";
         String date = "";
-        int s = 0;
+        int savedEvent = 0;
         eventID = 0;
         Scraper scraper = new Scraper();
         String eventUrl = null;
@@ -49,52 +50,65 @@ public class DetailActivity extends AppCompatActivity {
             c = db.selectSavedEvents();
         else c = db.selectAllEvents();
 
+        // Retrieves the detail info from the cursor
         if (c.move(position)){
             title = c.getString(c.getColumnIndex("title"));
-            organizer = c.getString(c.getColumnIndex("location"));
+            organizer = c.getString(c.getColumnIndex("organizer"));
             imgUrl = c.getString(c.getColumnIndex("imgurl"));
             eventID = c.getLong(c.getColumnIndex("_id"));
             eventUrl = c.getString(c.getColumnIndex("eventurl"));
             time = c.getString(c.getColumnIndex("time"));
             date = c.getString(c.getColumnIndex("date"));
-            s = c.getInt(c.getColumnIndex("saved"));
+            savedEvent = c.getInt(c.getColumnIndex("saved"));
         }
 
-        scraper.scrapeP(eventUrl, db, eventID, this);
+        // Scrapes for description
+        scraper.scrapeDescription(eventUrl, db, eventID, this);
+
         TextView timeView = findViewById(R.id.time);
-        timeView.setText(time);
-
         TextView dateView = findViewById(R.id.date);
-        dateView.setText(date);
-
-        //scraper.scrapeP(eventUrl, db, eventID);
         TextView titleview = findViewById(R.id.title);
-        titleview.setText(title);
         TextView orgView = findViewById(R.id.organizer);
+        ImageView imageView = findViewById(R.id.img);
+        ToggleButton saviour = findViewById(R.id.saviour);
+
+        timeView.setText(time);
+        dateView.setText(date);
+        titleview.setText(title);
         orgView.setText(organizer);
 
-        ImageView imageView = (ImageView) findViewById(R.id.img);
-        Picasso.get().load(imgUrl).into(imageView); //https://square.github.io/picasso/
+        // Loads the image from the internet into the activity using the Picasso library
+        // More on Picasso: https://square.github.io/picasso/
+        Picasso.get().load(imgUrl).into(imageView);
 
-        ToggleButton saviour = findViewById(R.id.saviour);
-        if(s == 1)
+        // Saves or forgets the event when the user hits the toggle button
+        if(savedEvent == 1)
             saviour.setChecked(true);
 
         saviour.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
+                if (isChecked){
                     save(1);
-
-                else save(0);
+                    Toast.makeText(getApplicationContext(),
+                        "Saved event!",
+                        Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    save(0);
+                    Toast.makeText(getApplicationContext(),
+                            "Forgot event!",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
     }
 
     private void save(int bool){
         db.saveEvent(eventID, bool);
+
     }
 
+    // Updates the description when the Scraper on another thread is finished.
     public void updateDescription(){
         c = db.selectAllEvents();
         if (c.move(position))

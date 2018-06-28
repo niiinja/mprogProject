@@ -18,14 +18,15 @@ import java.util.ArrayList;
 
 
 /**
- * Created by s156543 on 20-6-2018.
+ * Adapter for the SettingsActivity, displays rows of added websites
  */
 
 public class SettingsAdapter extends CursorAdapter{
 
     @Override
     public View newView(final Context context, Cursor cursor, ViewGroup viewGroup) {
-        View view = LayoutInflater.from(context).inflate(R.layout.website_row, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.website_row, viewGroup,
+                false);
         view.setClickable(true);
         view.setFocusable(true);
         view.setBackgroundResource(android.R.drawable.menuitem_background);
@@ -34,13 +35,12 @@ public class SettingsAdapter extends CursorAdapter{
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        TextView buttonText = (TextView) view.findViewById(R.id.checkWebsite);
+        TextView buttonText = view.findViewById(R.id.checkWebsite);
         String website = cursor.getString(cursor.getColumnIndex("url"));
         buttonText.setText(website);
     }
 
     public SettingsAdapter(Context context, Cursor cursor,boolean autoRequery){
-
         super(context, cursor, autoRequery);
     }
 }

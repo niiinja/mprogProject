@@ -63,7 +63,6 @@ public class CalendarActivity extends AppCompatActivity {
                     updateData(save);               }
             }
         });
-
     }
 
     // Open settings activity

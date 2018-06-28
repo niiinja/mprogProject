@@ -1,7 +1,7 @@
 package com.example.s156543.eventjes;
 
 /**
- * Created by s156543 on 13-6-2018.
+ * Class for the event entries
  */
 
 public class EventEntry {
@@ -14,11 +14,11 @@ public class EventEntry {
     String imgUrl;
     String eventUrl;
     String description;
-
     boolean saved;
 
-    public EventEntry(String organizer, String title, String time, String date, java.sql.Date dateTime,
-                      String imgUrl, String eventUrl, String description, boolean saved) {
+    public EventEntry(String organizer, String title, String time, String date,
+                      java.sql.Date dateTime, String imgUrl, String eventUrl,
+                      String description, boolean saved) {
 
         this.organizer = organizer;
         this.title = title;
@@ -30,8 +30,4 @@ public class EventEntry {
         this.description = description;
         this.saved = saved;
     }
-
-
-
-
 }

@@ -37,7 +37,7 @@ public class CalendarAdapter extends CursorAdapter{
         TextView dateView = view.findViewById(R.id.date);
 
         String title = cursor.getString(cursor.getColumnIndex("title"));
-        String url = cursor.getString(cursor.getColumnIndex("location"));
+        String url = cursor.getString(cursor.getColumnIndex("organizer"));
         String time = cursor.getString(cursor.getColumnIndex("time"));
         String date = cursor.getString(cursor.getColumnIndex("date"));
 

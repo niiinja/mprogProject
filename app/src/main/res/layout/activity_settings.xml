@@ -24,6 +24,7 @@
             android:layout_centerHorizontal="true"
             android:hint="enter website eventpage"
             android:padding="20dp"
+            android:textSize="18sp"
             android:textColor="@color/colorPrimary" />
 
     </android.support.design.widget.TextInputLayout>
@@ -49,7 +50,8 @@
         android:paddingRight="20dp"
         android:paddingTop="205dp"
         android:text="remove websites"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp" />
 
     <ListView
         android:id="@+id/websiteList"

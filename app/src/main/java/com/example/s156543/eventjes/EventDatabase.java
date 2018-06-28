@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by s156543 on 8-6-2018.
+ * This class provides all the functionality of the SQL databases
+ * for both the website and the event tables.
  */
 
 public class EventDatabase extends SQLiteOpenHelper {
@@ -17,14 +18,15 @@ public class EventDatabase extends SQLiteOpenHelper {
         super(context, name, factory, version);
     }
 
+    // Creates a table for event entries and a table for website entries
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         SQLiteDatabase db = sqLiteDatabase;
-        String query = "CREATE TABLE events (_id INTEGER PRIMARY KEY, title STRING, location STRING," +
+        String query = "CREATE TABLE events (_id INTEGER PRIMARY KEY, title STRING, organizer STRING," +
                 " date STRING, time STRING, datetime DATETIME, imgurl STRING, eventurl STRING," +
                 "description STRING, saved BIT);";
         db.execSQL(query);
-        query = "CREATE TABLE websites (_id INTEGER PRIMARY KEY, url STRING, type STRING, method STRING);";
+        query = "CREATE TABLE websites (_id INTEGER PRIMARY KEY, url STRING);";
         db.execSQL(query);
     }
 
@@ -45,27 +47,28 @@ public class EventDatabase extends SQLiteOpenHelper {
         return instance;
     }
 
-    // Insert new journal entry in the entries database
+    // Insert new website entry in the website table
     public void insertWebsite(WebsiteEntry websiteEntry){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
         contentValues.put("url", websiteEntry.url);
-        contentValues.put("type", websiteEntry.type);
-        contentValues.put("method", websiteEntry.method);
 
         entrydb.insert("websites", null, contentValues);
     }
 
+    // Insert new event entry in the event table
     public void insertEvent(EventEntry eventEntry){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         String dateString;
+
+        // In case of an event with dateTime = "null",
+        // assigning it 2018-12-31 will place it at the end of the calendar
         if(eventEntry.dateTime != null) dateString = eventEntry.dateTime.toString();
-        else dateString = "1970-01-01 00:00:00";
+        else dateString = "2018-12-31 00:00:00";
 
         contentValues.put("title", eventEntry.title);
-        contentValues.put("location", eventEntry.organizer);
+        contentValues.put("organizer", eventEntry.organizer);
         contentValues.put("date", eventEntry.date);
         contentValues.put("time", eventEntry.time);
         contentValues.put("datetime", dateString);
@@ -73,32 +76,31 @@ public class EventDatabase extends SQLiteOpenHelper {
         contentValues.put("eventurl", eventEntry.eventUrl);
         contentValues.put("description", eventEntry.description);
 
-        if(eventEntry.saved)
-            contentValues.put("saved", 1);
-        else
-            contentValues.put("saved", 0);
         entrydb.insert("events", null, contentValues);
     }
 
-    // grabs all websites
+    // Selects all websites in he database
     public Cursor selectAllWebsites(){
         SQLiteDatabase selectAlldb = this.getWritableDatabase();
         Cursor cursor = selectAlldb.rawQuery("SELECT * FROM websites", null);
         return cursor;
     }
 
-    public Cursor selectSavedEvents(){
-        SQLiteDatabase selectAlldb = this.getWritableDatabase();
-        Cursor cursor = selectAlldb.rawQuery("SELECT * FROM events WHERE saved = '1'", null);
-        return cursor;
-    }
-
+    // Selects all events in the database
     public Cursor selectAllEvents(){
         SQLiteDatabase selectAlldb = this.getWritableDatabase();
         Cursor cursor = selectAlldb.rawQuery("SELECT * FROM events ORDER BY datetime ASC", null);
         return cursor;
     }
 
+    // Selects all saved events in the database
+    public Cursor selectSavedEvents(){
+        SQLiteDatabase selectAlldb = this.getWritableDatabase();
+        Cursor cursor = selectAlldb.rawQuery("SELECT * FROM events WHERE saved = '1'", null);
+        return cursor;
+    }
+
+    // Updates an event's description
     public void updateDescription(String d, long id){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -106,33 +108,29 @@ public class EventDatabase extends SQLiteOpenHelper {
         entrydb.update("events", cv,"_id =" + id, null);
     }
 
-    public void saveEntry(long id){
-        SQLiteDatabase entrydb =  this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("saved", "1");
-        entrydb.update("events", cv, "_id =" + id, null);
-    }
-
+    // Removes a website and all its events from the database
     public void deleteWebsite(String title){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
         String organizer = title;
 
+        // Determines the organizer name to filter events on that to delete them
         int index = organizer.indexOf(".");
         if (index > 0)
             organizer = organizer.substring(0, index);
+
         int i = organizer.indexOf("/");
         if (i > 0)
             organizer = organizer.substring(i + 2, organizer.length());
 
         entrydb.delete("websites", "url = ?", new String[]{title});
-        entrydb.delete("events", "location = ?", new String[]{organizer});
+        entrydb.delete("events", "organizer = ?", new String[]{organizer});
     }
 
+    // Marks an event as "saved"
     public void saveEvent(long id, int bool){
         SQLiteDatabase entrydb =  this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("saved", bool);
         entrydb.update("events", cv, "_id =" + id, null);
     }
-
 }

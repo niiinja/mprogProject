@@ -40,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){ addButton();}
         });
-        removeBtn = (Button) findViewById(R.id.remove);
+        removeBtn = findViewById(R.id.remove);
         removeBtn.setOnClickListener(new View.OnClickListener(){
             @Override
                     public void onClick(View view){ removeButton();}
@@ -51,18 +51,19 @@ public class SettingsActivity extends AppCompatActivity {
         updateAdapter();
     }
 
+    // Adds a new event page to the database, and scrapes the URL
     private void addButton(){
         TextView urlview = findViewById(R.id.input);
         String url = Objects.toString(urlview.getText());
-        if (url.substring(0,3) != "http"){
+        if (url.substring(0,3) != "http")
             url = "http://" + url;
-        }
+
         try {
             scraper.scrapeForEvents(url, db, this);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        WebsiteEntry websiteEntry = new WebsiteEntry(url, "bla", "standard");
+        WebsiteEntry websiteEntry = new WebsiteEntry(url);
         EventDatabase instance = EventDatabase.getInstance(this);
         instance.insertWebsite(websiteEntry);
 
@@ -72,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
         updateAdapter();
     }
 
+    // Removes a website and all its events
     private void removeButton(){
         for(String t : selected){
             db.deleteWebsite(t);
@@ -87,10 +89,11 @@ public class SettingsActivity extends AppCompatActivity {
         selected.add(title);
     }
 
+    // Updates the displayed websites
     private void updateAdapter(){
         Cursor c = db.selectAllWebsites();
         adapter = new SettingsAdapter(this, c, true);
         ListView websiteList = findViewById(R.id.websiteList);
-        websiteList.setAdapter((ListAdapter) adapter);
+        websiteList.setAdapter(adapter);
     }
 }

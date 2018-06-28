@@ -27,6 +27,8 @@ public class Scraper {
     public Scraper() {
     }
 
+    // The main scraping method which calls all other scraping methods
+    // and adds the scraped events to the database
     public void scrapeForEvents(String u, EventDatabase eventdatabase, final Activity activity)
                                 throws  UnknownHostException{
         final String url = u;
@@ -41,12 +43,12 @@ public class Scraper {
 
                     int count = 0;
                     for (Element t : titles) {
-
                         String imgUrl = findImg(t.parent().parent(), url);
                         if(imgUrl == null){
                             Element body = doc.body();
                             imgUrl = findImg(body, url);
 
+                            // Show image of "no image available" when no image could be found
                             if(imgUrl == null)
                                 imgUrl = "https://proxy.duckduckgo.com/iu/?u=" +
                                         "http%3A%2F%2Fwww.temple.edu%2Fprovost%2Fimages%" +
@@ -54,8 +56,13 @@ public class Scraper {
                         }
 
                         String org = getOrganizer(url);
-                        String u = t.parent().selectFirst("a[href]").attr("abs:href");
                         String date = scrapeDate(t.parent());
+
+                        String u = null;
+                        try{
+                            u = t.parent().selectFirst("a[href]").attr("abs:href");
+                            }
+                        catch(Exception e){}
 
                         if (date == null) {
                             try{
@@ -63,17 +70,21 @@ public class Scraper {
                             Element body = eventDoc.selectFirst("body");
                             date = scrapeDate(body);
                             }
+
+                            // Assigning "31/12" to events without a date, places them at the
+                            // end of the calendar.
                             catch(Exception e){
-                                date = "01/01";
+                                date = "31/12";
                             }
                         }
+
                         // Stop scraping events that have already taken place
                         if(date == "bad")
                             continue;
 
-                        String time = scrapeTime(t, u, t.text());
-                        java.sql.Date sqlDate = null;
+                        String time = scrapeTime(t, u);
 
+                        java.sql.Date sqlDate = null;
                         try {
                             sqlDate = parseDate(date, time);
                         }
@@ -164,7 +175,8 @@ public class Scraper {
     }
 
     // Scrapes the description, assuming it is the largest paragraph on the event's page.
-    public void scrapeP(String eventUrl, final EventDatabase eventdatabase, long ID, DetailActivity act) {
+    public void scrapeDescription(String eventUrl, final EventDatabase eventdatabase,
+                        long ID, DetailActivity act) {
         final String url = eventUrl;
         final DetailActivity activity = act;
         final EventDatabase db = eventdatabase;
@@ -201,31 +213,29 @@ public class Scraper {
     }
 
     // Scrapes the time, by searching for a hh:mm pattern nearby the event title
-    public String scrapeTime(Element t, String u, String title) throws IOException {
+    public String scrapeTime(Element t, String u) throws IOException {
         Pattern pattern = Pattern.compile("([0-9]|0[0-9]|1[0-9]|2[0-3])(:|\\.)([0-5][0-9])");
         String time = "00:00";
         Element parent = t.parent();
-        //time = parent.getElementsMatchingText(pattern).first();
         Matcher matcher;
         matcher = pattern.matcher(parent.toString());
 
         if (matcher.find()) {
             time = matcher.group();
-
-        } else {
+        }
+        else {
             parent = parent.parent();
             matcher = pattern.matcher(parent.toString());
-            if (matcher.find()) {
+
+            if (matcher.find())
                 time = matcher.group();
-            }
             else{
                 Document doc = Jsoup.connect(u).get();
                 Element body =  doc.body();
-
                 matcher = pattern.matcher(body.toString());
-                if (matcher.find()) {
+
+                if (matcher.find())
                     time = matcher.group();
-                }
             }
         }
         if(time.length() <= 4)
@@ -261,6 +271,7 @@ public class Scraper {
                 String days = date.substring(0, 3);
                 String m = date.substring(3);
                 m = m.toLowerCase();
+
                 if (m.equals("jan")|| m.equals("january")|| m.equals("januari")){
                     date = days + "01";
                 }
