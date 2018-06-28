@@ -23,6 +23,9 @@ Eventjes solves this problem. Users can simply input the event pages of their fa
 - [Jsoup,  a java library for parsing, extracting and manipulating real-world HTML](https://jsoup.org/)
 - [Picasso, image downloading and caching library for Android](https://square.github.io/picasso/)
 
+## Video demo
+https://youtu.be/6Tn8Uopdu7E
+
 
 Copyright (C) 2018  Nina Boelsums
 
