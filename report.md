@@ -73,28 +73,34 @@ WebsiteEntry: class for the website entries.
 | saved |
 
 ## Challenges
-For starters, this was my first experience with webscraping, which is something that I've wanted to do for a long time. I hope to use these skills for building bots for projects.Every website's HTML is quite different. Therefore i tried to build Eventjes with generic intuitive design conventions.
-I have not hardcoded any scraping rules for specific websites. The consequence of that is that some websites have better results than others,
-but also that the app is extensible to many different websites.
 
 A challenge to me was the scraping of dates and times of an event. As a human being I know that something formatted like 00:00 is a time and that 13 JUL is a date.
-But how could I make my application understand this? Luckily I discovered patters and regular expressions for Java, which allowed me to represent different formatting styles
+But how could I make my application understand this? This problem slowed my process down in the second week. Luckily I discovered patters and regular expressions for Java, which allowed me to represent different formatting styles
 of the names of the months and such in regular expressions. Getting them right was rather tricky, but going through the process gained me a lot of knowledge on regular expressions which I will use in my future.
 
 Another challenge to me were the runnables and multi-threading. I had some experience with callbacks for JSON queries and such, but implementing the different Jsoup threads was difficult to me.
 Specifically in the DetailActivity, the thread which scraped for a description would not be finished by the time that the DetailActivity got displayed. To try and solve this, I researched a lot on what exactly threads and runnables are.
 Eventually I walked through my code with a classmate and discovered that I could let some code run on the UI thread when the scraper method was finished. This solved my problem.
 
-Sadly I was not able to scrape websites that make heavy use of javascript because the JSOUP library only scrapes HTML.
-Other challenges that I encountered all had to do with the Android platform, and I was able to solve them all.
+Overall, this was my first experience with webscraping, which is something that I've wanted to do for a long time.
+I started out with two simple event pages to scrape, and when i got good results back from them I tried other pages, expecting many to work as well.
+Unfortunately this was not the case. I started editing and editing the logic of the scraper to make every method as unspecific as possible, to be able to scrape many different websites.
+This forced me to critically think about my line of thinking and to find patterns in web design that I hadn't noticed before. I believe this was the most challenging and most interesting phase of my project.
+It was also quite statisfying to notice that at first, to add another website, I would have to edit a lot of code, but after some process I noticed that more and more websites would give me acceptable results.
+This was somewhat prove of my scraping-rules really becoming more generally applicable.
+
+Other challenges that I encountered had to do with the Android platform, these challenges weren't very interesting and I was able to solve them all.
 
 
 ## Decisions
-I decided to invest more time into generalizing the scraper rules, in order to get better results.
+I have specifically decided not hardcoded any scraping rules for specific websites. The consequence of that is that some websites have better results than others,
+but also that the app is extensible to many different websites.
+I also decided to invest more time into generalizing the scraper rules, in order to get better results.
 This meant that I had to drop the "filter events on event type" functionality that I had originally planned for my MVP.
 I made this decision because the filtering did not seem to provide a much richer user experience, whilst generalizing the scraper rules would really improve the user experience.
 Also, the scraper rulers seemed more technically interesting and new to me than the filtering option.
 
+Sadly I was not able to scrape websites that make heavy use of javascript because the JSOUP library only scrapes HTML.
 Due to a lack of time I focused my efforts on websites that were mainly HTML/CSS, and didn't put any energy into scraping javascript websites which I could have done with WebClient.
 I did this because I worried that if I did also dive into javascript websites, I would get disappointing results on botch javascript and HTML/CSS websites, and would not have enough time to improve.
 Therefore I decided to focus on HTML/CSS websites.
