@@ -7,8 +7,6 @@ The user can always have a handy overview of the events that they are interested
 ### Screenshot
 ![](/doc/screenshotEventjes.png)
 
-
-
 ## Technical design
 Eventjes makes use of the JSOUP library. The URLs of eventpages that are entered by the users are stored in the websites-table in an SQL database.
 Then Scraper, using JSOUP, connects to this URL and searches for event titles in the HTML (assuming that the titles will be the most frequently occuring headers).
@@ -75,13 +73,21 @@ WebsiteEntry: class for the website entries.
 | saved |
 
 ## Challenges
-Every website's HTML is quite different. Therefore i tried to build Eventjes with generic intuitive design conventions.
+For starters, this was my first experience with webscraping, which is something that I've wanted to do for a long time. I hope to use these skills for building bots for projects.Every website's HTML is quite different. Therefore i tried to build Eventjes with generic intuitive design conventions.
 I have not hardcoded any scraping rules for specific websites. The consequence of that is that some websites have better results than others,
 but also that the app is extensible to many different websites.
+
+A challenge to me was the scraping of dates and times of an event. As a human being I know that something formatted like 00:00 is a time and that 13 JUL is a date.
+But how could I make my application understand this? Luckily I discovered patters and regular expressions for Java, which allowed me to represent different formatting styles
+of the names of the months and such in regular expressions. Getting them right was rather tricky, but going through the process gained me a lot of knowledge on regular expressions which I will use in my future.
+
+Another challenge to me were the runnables and multi-threading. I had some experience with callbacks for JSON queries and such, but implementing the different Jsoup threads was difficult to me.
+Specifically in the DetailActivity, the thread which scraped for a description would not be finished by the time that the DetailActivity got displayed. To try and solve this, I researched a lot on what exactly threads and runnables are.
+Eventually I walked through my code with a classmate and discovered that I could let some code run on the UI thread when the scraper method was finished. This solved my problem.
+
 Sadly I was not able to scrape websites that make heavy use of javascript because the JSOUP library only scrapes HTML.
 Other challenges that I encountered all had to do with the Android platform, and I was able to solve them all.
-Regular Expressions
-Multi-Threading
+
 
 ## Decisions
 I decided to invest more time into generalizing the scraper rules, in order to get better results.

@@ -195,7 +195,6 @@ public class Scraper {
                         if(d.length() > description.length())
                             description = d;
                         eventdatabase.updateDescription(d, id);
-
                     }
                     eventdatabase.updateDescription(description, id);
 
