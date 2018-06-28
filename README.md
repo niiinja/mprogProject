@@ -1,34 +1,40 @@
-# Project mprog 
-Nina Boelsums
+# Eventjes
+Nina Boelsums - 10742670
 
-The goal of this mobile application is to provide users with an overview of the upcoming events of their favourite organizers.
+*Eventjes provides its users with an overview of events of their favorite organizers.*
 
-## Problem statement
+## Description
+
 Since the Cambridge Analytica scandal, a large number of people want to leave Facebook. However, many of them feel forced to stay because they depend on it for the events and parties. They will miss one place where they can find all the upcoming events of their liked venues, because they don’t want to spend a long time visiting all the individual websites. This causes people to stay on Facebook unwillingly, or to become somewhat socially isolated when they leave.
 
-## Solution
-An application on which the user can find a collection of all the upcoming events of their favourite venues.
+Eventjes solves this problem. Users can simply input the event pages of their favorite organizers, and the application scrapes the events from the HTML. This provides users with a handy overview of events that they might be interested in, with an additional list where they can view their favorite events that they have saved. 
 
-## Visual representation
+## User Interface
 ![](/doc/finalUI.png)
 
-## Main features and MVP
+## Features
 -	Add/delete websites of event organizers
 -	Browse through all upcoming events of these organizers, sorted on date
 -	View details such as title, time, date image and description on event
 -	Store an event as saved
 -	View the collection of saved events in the calendar
 
-### Optional future features
--	Select events on event-type
--	Enable user-friendly and visual tweaking of the web-scraping rules.
+## External Libraries
+- [Jsoup,  a java library for parsing, extracting and manipulating real-world HTML](https://jsoup.org/)
+- [Picasso, image downloading and caching library for Android](https://square.github.io/picasso/)
 
-## Prerequisites
-Datasources: Various websites of venues. Their event pages will be in html and the content of these pages must be transformed from html strings to values of event object parameters such as “date” “location” “eventName” etc.
 
-External components: Eventjes screen scrapes event pages of various websites using Jsoup https://jsoup.org/ Jsoup is a java library for parsing, extracting and manipulating real-world HTML
+Copyright (C) 2018  Nina Boelsums
 
-Similar mobile apps: At the moment people use social media like Facebook(and to some extends Twitter and Instagram) to find out about events. These platforms require the organizers to create an account and actively post their events on there. Before social media there was the RSS feed, which is still used by some to read the news. RSS also requires the organizer to take action: they need to add an RSS feed to their website. There currently aren’t any mobile apps that collect events without any extra effort from the organizers .
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Hardest parts: Every HTML page is formatted differently. The hardest part is to tweak the scraping and transforming of the data in such a way that the outputs will be legible and for the most part comparable to the results coming from other websites.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
